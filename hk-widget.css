@@ -1,0 +1,31 @@
+/* ===== Hochkar Widget CSS ===== */
+#hk-widget{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:720px;width:100%;border:1px solid #e6e6e9;border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:16px}
+#hk-widget,#hk-widget *{box-sizing:border-box}
+#hk-widget .hk-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:12px}
+#hk-widget .hk-title{margin:0;font-size:22px;font-weight:800}
+#hk-widget .hk-subtitle{color:#6b7280;font-size:14px}
+#hk-widget .hk-logo{height:40px;width:auto;object-fit:contain}
+#hk-widget .hk-body{display:flex;gap:16px;flex-wrap:wrap;min-width:0}
+#hk-widget .hk-section{flex:1 1 300px;border:1px solid #ececf1;border-radius:12px;padding:14px;min-width:0}
+#hk-widget .hk-section-title{font-weight:600;margin-bottom:10px}
+#hk-widget .hk-daterow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:end;width:100%}
+#hk-widget .hk-datefield{min-width:0;width:100%}
+#hk-widget .hk-datefield label{display:block;font-size:12px;color:#6b7280;margin-bottom:4px;line-height:1.2}
+#hk-widget .hk-datefield input{display:block;width:100%;max-width:100%;padding:10px;border:1px solid #d1d5db;border-radius:12px;background:#fff;color:#111827;font-size:14px;line-height:1.2;min-inline-size:0;appearance:auto;-webkit-appearance:auto}
+#hk-widget .hk-hint{margin-top:8px;color:#6b7280;font-size:12px}
+#hk-widget .hk-duration{margin-top:8px;font-size:13px;color:#111827;font-weight:600}
+#hk-widget .hk-counters{display:flex;flex-direction:column;gap:8px}
+#hk-widget .hk-counter-row{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;border:1px solid #ececf1;border-radius:12px;padding:12px}
+#hk-widget .hk-count{font-size:24px;font-weight:800;color:#111827;min-width:28px;text-align:center}
+#hk-widget .hk-label{font-weight:700}
+#hk-widget .hk-sublabel{color:#6b7280;font-size:12px}
+#hk-widget .hk-actions{display:flex;gap:8px}
+#hk-widget .hk-btn{width:36px;height:36px;border-radius:10px;border:1px solid #d1d5db;background:#fff;font-size:18px;line-height:34px;text-align:center;cursor:pointer}
+#hk-widget .hk-btn:disabled{opacity:.35;cursor:not-allowed}
+#hk-widget .hk-plus{font-weight:800}
+#hk-widget .hk-error{margin-top:8px;color:#b00020;font-size:14px}
+#hk-widget .hk-footer{margin-left:auto;margin-top:8px}
+#hk-widget .hk-cta{display:inline-block;padding:12px 18px;border-radius:12px;border:0;background:#6366f1;color:#fff;font-weight:700;cursor:pointer;min-width:140px}
+@media (max-width:510px){#hk-widget .hk-daterow{grid-template-columns:1fr}#hk-widget .hk-logo{height:32px}}
+#hk-widget.hk-narrow .hk-daterow{grid-template-columns:1fr}
+#hk-widget.hk-narrow .hk-logo{height:32px}
