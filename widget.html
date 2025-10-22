@@ -14,14 +14,14 @@
     /* Keine feste Höhe für Body/HTML, damit der iFrame nur so hoch
        wird wie nötig (die Höhe messen wir später exakt). */
     body{
-      margin:0;
-      background:#f4f6f9;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:24px;               /* => siehe BODY_PADDING im Resize-Script */
-    }
+          margin:0;
+          background:transparent; /* Hintergrund durchsichtig */
+          font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+          display:flex;
+          align-items:flex-start;
+          justify-content:center;
+          padding:0; /* kein zusätzlicher Außenabstand */
+        }
 
     /* ---------------------------------------------------------
        Widget-Container
