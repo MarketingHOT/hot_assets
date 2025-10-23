@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ötscher Buchungs-Widget</title>
+
+  <style>
+    /* ---------------------------------------------------------
+       Basis & Layout (ident zum Hochkar-Widget)
+       --------------------------------------------------------- */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body{
+      margin:0;
+      background:#f4f6f9;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:24px;               /* => siehe BODY_PADDING im Resize-Script */
+    }
+
+    /* ---------------------------------------------------------
+       Widget-Container
+       --------------------------------------------------------- */
+    #oe-widget{
+      max-width:720px;
+      width:100%;
+      background:#fff;
+      border:1px solid #e6e6e9;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 6px 18px rgba(0,0,0,.08);
+    }
+    #oe-widget * { box-sizing:border-box; }
+
+    /* Kopfzeile */
+    .oe-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:8px;
+    }
+    .oe-title{ margin:0; font-size:22px; font-weight:800; line-height:1.2; }
+    .oe-subtitle{ color:#6b7280; font-size:14px; }
+    .oe-logo{ height:40px; width:auto; object-fit:contain; }
+
+    /* Body-Bereiche */
+    .oe-body{ display:flex; gap:16px; flex-wrap:wrap; min-width:0; }
+    .oe-section{
+      flex:1 1 300px;
+      border:1px solid #ececf1;
+      border-radius:12px;
+      padding:14px;
+      min-width:0;
+    }
+    .oe-section-title{ font-weight:600; margin-bottom:10px; }
+
+    /* ---------------------------------------------------------
+       Datumsauswahl
+       --------------------------------------------------------- */
+    .oe-daterow{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:10px;
+      align-items:end;
+      width:100%;
+    }
+    .oe-datefield{ min-width:0; width:100%; }
+    .oe-datefield label{
+      display:block;
+      font-size:12px;
+      color:#6b7280;
+      margin:0 0 4px 0;
+      line-height:1.2;
+    }
+    input[type="date"]{
+      display:block;
+      width:100%;
+      max-width:100%;
+      padding:10px;
+      border:1px solid #d1d5db;
+      border-radius:12px;
+      background:#fff;
+      color:#111827;
+      font-size:14px;
+      line-height:1.2;
+      min-inline-size:0;
+      appearance:auto;
+      -webkit-appearance:auto;
+    }
+
+    .oe-hint{ margin-top:8px; color:#6b7280; font-size:12px; }
+    .oe-duration{ margin-top:8px; font-size:13px; color:#111827; font-weight:600; }
+
+    /* ---------------------------------------------------------
+       Zähler (Erwachsene / Kinder)
+       --------------------------------------------------------- */
+    .oe-counters{ display:flex; flex-direction:column; gap:8px; }
+    .oe-counter-row{
+      display:grid;
+      grid-template-columns:40px 1fr auto;
+      gap:10px;
+      align-items:center;
+      border:1px solid #ececf1;
+      border-radius:12px;
+      padding:12px;
+    }
+    .oe-count{ font-size:24px; font-weight:800; color:#111827; min-width:28px; text-align:center; }
+    .oe-label{ font-weight:700; }
+    .oe-sublabel{ color:#6b7280; font-size:12px; }
+
+    .oe-actions{ display:flex; gap:8px; }
+    .oe-btn{
+      width:36px; height:36px;
+      border-radius:10px;
+      border:1px solid #d1d5db;
+      background:#fff;
+      font-size:18px; line-height:34px;
+      text-align:center; cursor:pointer;
+    }
+    .oe-btn:disabled{ opacity:.35; cursor:not-allowed; }
+    .oe-plus{ font-weight:800; }
+
+    .oe-error{ margin-top:8px; color:#b00020; font-size:14px; }
+    .oe-footer{ margin-left:auto; margin-top:8px; }
+
+    /* ---------------------------------------------------------
+       CTA-Button – gleiche CI-Farbe wie Hochkar-Widget
+       --------------------------------------------------------- */
+    .oe-cta{
+      display:inline-block;
+      padding:12px 18px;
+      border-radius:12px;
+      border:0;
+      background:#154696;      /* ident zur Hochkar-Variante */
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      min-width:140px;
+    }
+    .oe-cta:hover{ background:#103874; }
+    .oe-cta:focus{ outline:2px solid #103874; outline-offset:2px; }
+
+    /* ---------------------------------------------------------
+       Responsiv
+       --------------------------------------------------------- */
+    @media (max-width:510px){
+      .oe-daterow{ grid-template-columns:1fr; }
+      .oe-logo{ height:32px; }
+    }
+    #oe-widget.oe-narrow .oe-daterow{ grid-template-columns:1fr; }
+    #oe-widget.oe-narrow .oe-logo{ height:32px; }
+  </style>
+</head>
+<body>
+
+  <div id="oe-widget">
+    <!-- Kopfbereich -->
+    <div class="oe-header">
+      <div class="oe-titles">
+        <h3 class="oe-title">Skitickets</h3>
+        <div class="oe-subtitle">Stunden-, Tages- & Mehrtagestickets</div>
+      </div>
+      <!-- offizielles Ötscher-Logo -->
+      <img class="oe-logo" src="https://raw.githubusercontent.com/MarketingHOT/hot_assets/refs/heads/main/logo_rgb_oetscher.png" alt="Ötscher Logo">
+    </div>
+
+    <!-- Hauptbereich -->
+    <div class="oe-body">
+      <!-- Datumsbereich -->
+      <div class="oe-section" id="oe-date-section">
+        <div class="oe-section-title">Datumsbereich</div>
+
+        <div class="oe-daterow">
+          <div class="oe-datefield">
+            <label for="oe-start">Von</label>
+            <input type="date" id="oe-start" required>
+          </div>
+          <div class="oe-datefield">
+            <label for="oe-end">Bis</label>
+            <input type="date" id="oe-end" placeholder="optional" disabled>
+          </div>
+        </div>
+
+        <div class="oe-hint">Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1&nbsp;Tag zu buchen.</div>
+        <div class="oe-duration" id="oe-duration">Ausgewählte Dauer: –</div>
+      </div>
+
+      <!-- Personen -->
+      <div class="oe-section oe-counters">
+        <div class="oe-counter-row">
+          <div class="oe-count" id="oe-adults-count">1</div>
+          <div class="oe-labels">
+            <div class="oe-label">Erwachsen</div>
+            <div class="oe-sublabel">Alter ab 16&nbsp;Jahren</div>
+          </div>
+          <div class="oe-actions">
+            <button class="oe-btn oe-minus" id="oe-adults-minus" type="button">–</button>
+            <button class="oe-btn oe-plus"  id="oe-adults-plus"  type="button">+</button>
+          </div>
+        </div>
+
+        <div class="oe-counter-row">
+          <div class="oe-count" id="oe-kids-count">0</div>
+          <div class="oe-labels">
+            <div class="oe-label">Kind</div>
+            <div class="oe-sublabel">Alter zwischen 6 und 15&nbsp;Jahren</div>
+          </div>
+          <div class="oe-actions">
+            <button class="oe-btn oe-minus" id="oe-kids-minus" type="button" disabled>–</button>
+            <button class="oe-btn oe-plus"  id="oe-kids-plus"  type="button">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fehler & CTA -->
+      <div id="oe-error" class="oe-error" style="display:none"></div>
+      <div class="oe-footer"><button id="oe-submit" class="oe-cta" type="button">Weiter</button></div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    /* ---------------------------------------------------------
+       Produkt-URLs (Ötscher)
+       --------------------------------------------------------- */
+    const PRODUCT_DAY   = "https://shop.oetscher.at/products/skitickets";
+    const PRODUCT_MULTI = "https://shop.oetscher.at/products/skitickets-pool";
+    const MAX_DAYS = 6;
+
+    const $ = id => document.getElementById(id);
+    const widget = $("oe-widget");
+    const dateSection = $("oe-date-section");
+
+    // Container-Responsive: Einspaltig unter 520 px
+    if (typeof ResizeObserver !== "undefined" && dateSection){
+      const ro = new ResizeObserver(entries => {
+        widget.classList.toggle("oe-narrow", entries[0].contentRect.width <= 520);
+      });
+      ro.observe(dateSection);
+    }
+
+    // Referenzen
+    const elStart = $("oe-start");
+    const elEnd   = $("oe-end");
+    const err     = $("oe-error");
+    const dur     = $("oe-duration");
+
+    const adultsCount = $("oe-adults-count");
+    const kidsCount   = $("oe-kids-count");
+
+    // Zähler-Status
+    let adults = 1, kids = 0;
+
+    function setCount(type, value){
+      value = Math.max(0, Math.min(99, value|0));
+      if (type === "adults"){
+        adults = value;
+        adultsCount.textContent = value;
+      } else {
+        kids = value;
+        kidsCount.textContent = value;
+        $("oe-kids-minus").disabled = value <= 0;
+      }
+    }
+
+    // Counter-Buttons
+    $("oe-adults-minus").onclick = () => setCount("adults", adults - 1);
+    $("oe-adults-plus").onclick  = () => setCount("adults", adults + 1);
+    $("oe-kids-minus").onclick   = () => setCount("kids", kids - 1);
+    $("oe-kids-plus").onclick    = () => setCount("kids", kids + 1);
+
+    // Helfer
+    function diffDays(start, end){
+      return Math.round((new Date(end) - new Date(start)) / 86400000) + 1;
+    }
+    function toISO(dateStr, endOfDay){
+      const d = new Date(dateStr + (endOfDay ? "T23:59:59.999" : "T00:00:00"));
+      return d.toISOString();
+    }
+
+    // Anzeige der Dauer aktualisieren
+    function updateDuration(){
+      const s = elStart.value;
+      const e = elEnd.value || s;
+      if (!s){ dur.textContent = "Ausgewählte Dauer: –"; return; }
+      const d = diffDays(s, e);
+      dur.textContent = `Ausgewählte Dauer: ${d} ${d === 1 ? "Tag" : "Tage"}`;
+    }
+
+    // Startdatum geändert
+    elStart.onchange = () => {
+      const s = elStart.value;
+      if (!s){
+        elEnd.value = "";
+        elEnd.disabled = true;
+        dur.textContent = "Ausgewählte Dauer: –";
+        return;
+      }
+
+      elEnd.disabled = false;
+
+      const max = new Date(s);
+      max.setDate(max.getDate() + MAX_DAYS - 1);
+      elEnd.min = s;
+      elEnd.max = max.toISOString().split("T")[0];
+
+      // immer auf 1 Tag zurücksetzen
+      elEnd.value = s;
+
+      // clampen
+      if (elEnd.value < elEnd.min) elEnd.value = elEnd.min;
+      if (elEnd.value > elEnd.max) elEnd.value = elEnd.max;
+
+      updateDuration();
+    };
+
+    // Enddatum geändert
+    elEnd.onchange = updateDuration;
+
+    // CTA
+    $("oe-submit").onclick = () => {
+      err.style.display = "none";
+
+      const s = elStart.value;
+      const e = elEnd.value || s;
+
+      if (!s){
+        return showErr("Bitte ein Startdatum wählen.");
+      }
+
+      const d = diffDays(s, e);
+      if (d < 1 || d > MAX_DAYS){
+        return showErr("Bitte eine Dauer zwischen 1 und 6 Tagen wählen.");
+      }
+
+      const fromISO = toISO(s, false);
+      const toISOv  = toISO(e, true);
+
+      const allocation = [];
+      if (adults > 0) allocation.push({ kind:"anonymous", quantity:adults, personType:"adult" });
+      if (kids   > 0) allocation.push({ kind:"anonymous", quantity:kids,   personType:"child" });
+
+      // Produkt-Wahl: 1 Tag -> skitickets, sonst -> skitickets-pool
+      const product = (d === 1) ? PRODUCT_DAY : PRODUCT_MULTI;
+      const durationAttr = (d === 1) ? "1d" : (d + "d");
+
+      const formState = {
+        validity:   { from: fromISO, to: toISOv },
+        allocation: { kind: "persontype", values: allocation },
+        attributes: { duration: durationAttr }
+      };
+
+      window.open(
+        product + "?formState=" + encodeURIComponent(JSON.stringify(formState)),
+        "_blank",
+        "noopener"
+      );
+    };
+
+    function showErr(t){
+      err.textContent = t;
+      err.style.display = "block";
+    }
+
+    // Default-Zähler
+    setCount("adults", 1);
+    setCount("kids", 0);
+  })();
+
+  /* ---------------------------------------------------------
+     Auto-Resize für iFrame-Einbettung
+     --------------------------------------------------------- */
+  (function(){
+    var ROOT = document.getElementById('oe-widget');
+    var BODY_PADDING = 48; // 24 + 24
+
+    function calcHeight(){
+      if (!ROOT) return 820;
+      return Math.ceil(ROOT.getBoundingClientRect().height) + BODY_PADDING;
+    }
+
+    function post(reason){
+      try{
+        parent.postMessage(
+          { type:'OEWIDGET_HEIGHT', height: calcHeight(), reason: reason||'' },
+          '*'
+        );
+      }catch(e){}
+    }
+
+    window.addEventListener('load',   function(){ post('load');   });
+    window.addEventListener('resize', function(){ post('resize'); });
+
+    var mo = new MutationObserver(function(){
+      clearTimeout(post._t);
+      post._t = setTimeout(function(){ post('mut'); }, 50);
+    });
+    mo.observe(ROOT, { subtree:true, childList:true, attributes:true });
+
+    setTimeout(function(){ post('delay300');  }, 300);
+    setTimeout(function(){ post('delay1200'); }, 1200);
+  })();
+  </script>
+</body>
+</html>
