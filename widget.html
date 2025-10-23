@@ -11,8 +11,8 @@
        --------------------------------------------------------- */
     *, *::before, *::after { box-sizing: border-box; }
 
-    /* Keine feste Höhe für Body/HTML, damit der iFrame nur so hoch
-       wird wie nötig (die Höhe messen wir später exakt). */
+    /* Keine feste Höhe für Body/HTML, damit der iFrame nur so hoch wird wie nötig
+       (die Höhe messen wir später exakt). */
     body{
       margin:0;
       background:#f4f6f9;
@@ -20,7 +20,7 @@
       display:flex;
       align-items:flex-start;
       justify-content:center;
-      padding:24px;               /* => siehe BODY_PADDING im Resize-Script */
+      padding:24px; /* => siehe BODY_PADDING im Resize-Script */
     }
 
     /* ---------------------------------------------------------
@@ -90,10 +90,9 @@
       font-size:14px;
       line-height:1.2;
       min-inline-size:0;
-      appearance:auto;           /* Theme-Overrides neutralisieren */
+      appearance:auto;
       -webkit-appearance:auto;
     }
-
     .hk-hint{ margin-top:8px; color:#6b7280; font-size:12px; }
     .hk-duration{ margin-top:8px; font-size:13px; color:#111827; font-weight:600; }
 
@@ -113,15 +112,16 @@
     .hk-count{ font-size:24px; font-weight:800; color:#111827; min-width:28px; text-align:center; }
     .hk-label{ font-weight:700; }
     .hk-sublabel{ color:#6b7280; font-size:12px; }
-
     .hk-actions{ display:flex; gap:8px; }
     .hk-btn{
       width:36px; height:36px;
       border-radius:10px;
       border:1px solid #d1d5db;
       background:#fff;
-      font-size:18px; line-height:34px;
-      text-align:center; cursor:pointer;
+      font-size:18px;
+      line-height:34px;
+      text-align:center;
+      cursor:pointer;
     }
     .hk-btn:disabled{ opacity:.35; cursor:not-allowed; }
     .hk-plus{ font-weight:800; }
@@ -137,13 +137,13 @@
       padding:12px 18px;
       border-radius:12px;
       border:0;
-      background:#154696;      /* <- gewünschte Farbe */
+      background:#154696; /* gewünschte Farbe */
       color:#fff;
       font-weight:700;
       cursor:pointer;
       min-width:140px;
     }
-    .hk-cta:hover{ background:#103874; }   /* etwas dunkler */
+    .hk-cta:hover{ background:#103874; }
     .hk-cta:focus{ outline:2px solid #103874; outline-offset:2px; }
 
     /* ---------------------------------------------------------
@@ -155,10 +155,29 @@
     }
     #hk-widget.hk-narrow .hk-daterow{ grid-template-columns:1fr; }
     #hk-widget.hk-narrow .hk-logo{ height:32px; }
+
+    /* ---------------------------------------------------------
+       iOS Safari Fixes: Date-Input übersteht nicht mehr
+       - Gleichmäßige Eingabehöhe
+       - Clipping innerhalb der Karten
+       --------------------------------------------------------- */
+    @supports (-webkit-touch-callout: none) {
+      /* verhindert, dass Date-Inputs die runden Kanten der Section überragen */
+      .hk-section { overflow: clip; } /* fallback wäre overflow:hidden; */
+
+      /* iOS-Rendering entschärfen & Höhe angleichen */
+      input[type="date"]{
+        -webkit-appearance: none;
+        appearance: none;
+        height: 44px;         /* harmoniert mit Buttons und mobilem Touch-Ziel */
+        line-height: 1;
+        padding: 10px;
+      }
+    }
   </style>
 </head>
-<body>
 
+<body>
   <div id="hk-widget">
     <!-- Kopfbereich -->
     <div class="hk-header">
@@ -201,7 +220,7 @@
           </div>
           <div class="hk-actions">
             <button class="hk-btn hk-minus" id="hk-adults-minus" type="button">–</button>
-            <button class="hk-btn hk-plus"  id="hk-adults-plus"  type="button">+</button>
+            <button class="hk-btn hk-plus" id="hk-adults-plus" type="button">+</button>
           </div>
         </div>
 
@@ -213,7 +232,7 @@
           </div>
           <div class="hk-actions">
             <button class="hk-btn hk-minus" id="hk-kids-minus" type="button" disabled>–</button>
-            <button class="hk-btn hk-plus"  id="hk-kids-plus"  type="button">+</button>
+            <button class="hk-btn hk-plus" id="hk-kids-plus" type="button">+</button>
           </div>
         </div>
       </div>
@@ -225,189 +244,181 @@
   </div>
 
   <script>
-  (function(){
-    /* ---------------------------------------------------------
-       Logik: UI, Validierung, Shop-URL
-       --------------------------------------------------------- */
-    const PRODUCT_URL = "https://shop.hochkar.com/products/skitickets";
-    const MAX_DAYS = 6;
+    (function(){
+      /* ---------------------------------------------------------
+         Logik: UI, Validierung, Shop-URL
+         --------------------------------------------------------- */
+      const PRODUCT_URL = "https://shop.hochkar.com/products/skitickets";
+      const MAX_DAYS = 6;
 
-    const $ = id => document.getElementById(id);
-    const widget = $("hk-widget");
-    const dateSection = $("hk-date-section");
+      const $ = id => document.getElementById(id);
+      const widget = $("hk-widget");
+      const dateSection = $("hk-date-section");
 
-    /* Container-Responsive: wenn die Datums-Sektion < 520 px, Einspaltig erzwingen */
-    if (typeof ResizeObserver !== "undefined" && dateSection){
-      const ro = new ResizeObserver(entries => {
-        widget.classList.toggle("hk-narrow", entries[0].contentRect.width <= 520);
-      });
-      ro.observe(dateSection);
-    }
-
-    /* Referenzen */
-    const elStart = $("hk-start");
-    const elEnd   = $("hk-end");
-    const err     = $("hk-error");
-    const dur     = $("hk-duration");
-
-    const adultsCount = $("hk-adults-count");
-    const kidsCount   = $("hk-kids-count");
-
-    /* Zähler-Status */
-    let adults = 1, kids = 0;
-
-    function setCount(type, value){
-      value = Math.max(0, Math.min(99, value|0));
-      if (type === "adults"){
-        adults = value;
-        adultsCount.textContent = value;
-      } else {
-        kids = value;
-        kidsCount.textContent = value;
-        $("hk-kids-minus").disabled = value <= 0;
-      }
-    }
-
-    /* Counter-Buttons */
-    $("hk-adults-minus").onclick = () => setCount("adults", adults - 1);
-    $("hk-adults-plus").onclick  = () => setCount("adults", adults + 1);
-    $("hk-kids-minus").onclick   = () => setCount("kids", kids - 1);
-    $("hk-kids-plus").onclick    = () => setCount("kids", kids + 1);
-
-    /* Helfer: Differenz Tage inkl. Start/Ende */
-    function diffDays(start, end){
-      return Math.round((new Date(end) - new Date(start)) / 86400000) + 1;
-    }
-
-    /* Anzeige der Dauer aktualisieren */
-    function updateDuration(){
-      const s = elStart.value;
-      const e = elEnd.value || s;
-      if (!s){ dur.textContent = "Ausgewählte Dauer: –"; return; }
-      const d = diffDays(s, e);
-      dur.textContent = `Ausgewählte Dauer: ${d} ${d === 1 ? "Tag" : "Tage"}`;
-    }
-
-    /* -------------------------------
-       Startdatum geändert:
-       - Enddatum aktivieren
-       - Grenzen 1–6 Tage setzen
-       - Enddatum IMMER auf Start zurücksetzen (=> 1 Tag)
-       - Vorhandenen Wert clampen (Sicherheitsnetz)
-       ------------------------------- */
-    elStart.onchange = () => {
-      const s = elStart.value;
-      if (!s){
-        elEnd.value = "";
-        elEnd.disabled = true;
-        dur.textContent = "Ausgewählte Dauer: –";
-        return;
+      /* Container-Responsive: wenn die Datums-Sektion < 520 px, Einspaltig erzwingen */
+      if (typeof ResizeObserver !== "undefined" && dateSection){
+        const ro = new ResizeObserver(entries => {
+          widget.classList.toggle("hk-narrow", entries[0].contentRect.width <= 520);
+        });
+        ro.observe(dateSection);
       }
 
-      elEnd.disabled = false;
+      /* Referenzen */
+      const elStart = $("hk-start");
+      const elEnd = $("hk-end");
+      const err = $("hk-error");
+      const dur = $("hk-duration");
+      const adultsCount = $("hk-adults-count");
+      const kidsCount = $("hk-kids-count");
 
-      const max = new Date(s);
-      max.setDate(max.getDate() + MAX_DAYS - 1);           // s + (MAX_DAYS-1)
-      elEnd.min = s;
-      elEnd.max = max.toISOString().split("T")[0];
-
-      // WICHTIG: immer zurücksetzen (1 Tag), damit kein „unendlich viele Tage“ möglich ist
-      elEnd.value = s;
-
-      // Falls der Browser noch was cacht: hart clampen
-      if (elEnd.value < elEnd.min) elEnd.value = elEnd.min;
-      if (elEnd.value > elEnd.max) elEnd.value = elEnd.max;
-
-      updateDuration();
-    };
-
-    /* Enddatum geändert -> nur Anzeige aktualisieren */
-    elEnd.onchange = updateDuration;
-
-    /* CTA klick -> Prüfen & Shop öffnen */
-    $("hk-submit").onclick = () => {
-      err.style.display = "none";
-
-      const s = elStart.value;
-      const e = elEnd.value || s;
-
-      if (!s){
-        return showErr("Bitte ein Startdatum wählen.");
+      /* Zähler-Status */
+      let adults = 1, kids = 0;
+      function setCount(type, value){
+        value = Math.max(0, Math.min(99, value|0));
+        if (type === "adults"){
+          adults = value;
+          adultsCount.textContent = value;
+        } else {
+          kids = value;
+          kidsCount.textContent = value;
+          $("hk-kids-minus").disabled = value <= 0;
+        }
       }
 
-      const d = diffDays(s, e);
-      if (d < 1 || d > MAX_DAYS){
-        return showErr("Bitte eine Dauer zwischen 1 und 6 Tagen wählen.");
+      /* Counter-Buttons */
+      $("hk-adults-minus").onclick = () => setCount("adults", adults - 1);
+      $("hk-adults-plus").onclick = () => setCount("adults", adults + 1);
+      $("hk-kids-minus").onclick = () => setCount("kids", kids - 1);
+      $("hk-kids-plus").onclick = () => setCount("kids", kids + 1);
+
+      /* Helfer: Differenz Tage inkl. Start/Ende */
+      function diffDays(start, end){
+        return Math.round((new Date(end) - new Date(start)) / 86400000) + 1;
       }
 
-      const from = new Date(s + "T00:00:00");
-      const to   = new Date(e + "T23:59:59.999");
+      /* Anzeige der Dauer aktualisieren */
+      function updateDuration(){
+        const s = elStart.value;
+        const e = elEnd.value || s;
+        if (!s){
+          dur.textContent = "Ausgewählte Dauer: –";
+          return;
+        }
+        const d = diffDays(s, e);
+        dur.textContent = `Ausgewählte Dauer: ${d} ${d === 1 ? "Tag" : "Tage"}`;
+      }
 
-      const allocation = [];
-      if (adults > 0) allocation.push({ kind:"anonymous", quantity:adults, personType:"adult" });
-      if (kids   > 0) allocation.push({ kind:"anonymous", quantity:kids,   personType:"child" });
+      /* Startdatum geändert */
+      elStart.onchange = () => {
+        const s = elStart.value;
+        if (!s){
+          elEnd.value = "";
+          elEnd.disabled = true;
+          dur.textContent = "Ausgewählte Dauer: –";
+          return;
+        }
+        elEnd.disabled = false;
 
-      const formState = {
-        validity:   { from: from.toISOString(), to: to.toISOString() },
-        allocation: { kind: "persontype", values: allocation },
-        attributes: { duration: "1d" }
+        const max = new Date(s);
+        max.setDate(max.getDate() + MAX_DAYS - 1); // s + (MAX_DAYS-1)
+        elEnd.min = s;
+        elEnd.max = max.toISOString().split("T")[0];
+
+        // immer zurücksetzen (1 Tag)
+        elEnd.value = s;
+
+        // falls Browser cacht -> clamp
+        if (elEnd.value < elEnd.min) elEnd.value = elEnd.min;
+        if (elEnd.value > elEnd.max) elEnd.value = elEnd.max;
+
+        updateDuration();
       };
 
-      window.open(
-        PRODUCT_URL + "?formState=" + encodeURIComponent(JSON.stringify(formState)),
-        "_blank",
-        "noopener"
-      );
-    };
+      /* Enddatum geändert -> nur Anzeige aktualisieren */
+      elEnd.onchange = updateDuration;
 
-    function showErr(t){
-      err.textContent = t;
-      err.style.display = "block";
-    }
+      /* CTA klick -> Prüfen & Shop öffnen */
+      $("hk-submit").onclick = () => {
+        err.style.display = "none";
 
-    /* Default-Zähler */
-    setCount("adults", 1);
-    setCount("kids", 0);
-  })();
+        const s = elStart.value;
+        const e = elEnd.value || s;
 
-  /* ---------------------------------------------------------
-     Auto-Resize für iFrame-Einbettung
-     - misst NUR die sichtbare Höhe des Widgets (#hk-widget)
-     - addiert Außenabstand des Body (24px oben + 24px unten)
-     --------------------------------------------------------- */
-  (function(){
-    var ROOT = document.getElementById('hk-widget');
-    var BODY_PADDING = 48; // 24 + 24
+        if (!s){
+          return showErr("Bitte ein Startdatum wählen.");
+        }
+        const d = diffDays(s, e);
+        if (d < 1 || d > MAX_DAYS){
+          return showErr("Bitte eine Dauer zwischen 1 und 6 Tagen wählen.");
+        }
 
-    function calcHeight(){
-      if (!ROOT) return 820;
-      return Math.ceil(ROOT.getBoundingClientRect().height) + BODY_PADDING;
-    }
+        const from = new Date(s + "T00:00:00");
+        const to = new Date(e + "T23:59:59.999");
 
-    function post(reason){
-      try{
-        parent.postMessage(
-          { type:'HKWIDGET_HEIGHT', height: calcHeight(), reason: reason||'' },
-          '*'
+        const allocation = [];
+        if (adults > 0) allocation.push({ kind:"anonymous", quantity:adults, personType:"adult" });
+        if (kids > 0) allocation.push({ kind:"anonymous", quantity:kids, personType:"child" });
+
+        const formState = {
+          validity: { from: from.toISOString(), to: to.toISOString() },
+          allocation: { kind: "persontype", values: allocation },
+          attributes: { duration: "1d" }
+        };
+
+        window.open(
+          PRODUCT_URL + "?formState=" + encodeURIComponent(JSON.stringify(formState)),
+          "_blank",
+          "noopener"
         );
-      }catch(e){}
-    }
+      };
 
-    window.addEventListener('load',   function(){ post('load');   });
-    window.addEventListener('resize', function(){ post('resize'); });
+      function showErr(t){
+        err.textContent = t;
+        err.style.display = "block";
+      }
 
-    // Wenn sich etwas im Widget verändert (z.B. Fehlermeldung/Dauer),
-    // Höhe mit leichtem Debounce aktualisieren.
-    var mo = new MutationObserver(function(){
-      clearTimeout(post._t);
-      post._t = setTimeout(function(){ post('mut'); }, 50);
-    });
-    mo.observe(ROOT, { subtree:true, childList:true, attributes:true });
+      /* Default-Zähler */
+      setCount("adults", 1);
+      setCount("kids", 0);
+    })();
 
-    // Sicherheits-Pings (Fonts / Rendering)
-    setTimeout(function(){ post('delay300');  }, 300);
-    setTimeout(function(){ post('delay1200'); }, 1200);
-  })();
+    /* ---------------------------------------------------------
+       Auto-Resize für iFrame-Einbettung
+       - misst NUR die sichtbare Höhe des Widgets (#hk-widget)
+       - addiert Außenabstand des Body (24px oben + 24px unten)
+       --------------------------------------------------------- */
+    (function(){
+      var ROOT = document.getElementById('hk-widget');
+      var BODY_PADDING = 48; // 24 + 24
+
+      function calcHeight(){
+        if (!ROOT) return 820;
+        return Math.ceil(ROOT.getBoundingClientRect().height) + BODY_PADDING;
+      }
+      function post(reason){
+        try{
+          parent.postMessage(
+            { type:'HKWIDGET_HEIGHT', height: calcHeight(), reason: reason||'' },
+            '*'
+          );
+        }catch(e){}
+      }
+
+      window.addEventListener('load', function(){ post('load'); });
+      window.addEventListener('resize', function(){ post('resize'); });
+
+      // Wenn sich etwas im Widget verändert (z.B. Fehlermeldung/Dauer),
+      // Höhe mit leichtem Debounce aktualisieren.
+      var mo = new MutationObserver(function(){
+        clearTimeout(post._t);
+        post._t = setTimeout(function(){ post('mut'); }, 50);
+      });
+      mo.observe(ROOT, { subtree:true, childList:true, attributes:true });
+
+      // Sicherheits-Pings (Fonts / Rendering)
+      setTimeout(function(){ post('delay300'); }, 300);
+      setTimeout(function(){ post('delay1200'); }, 1200);
+    })();
   </script>
 </body>
 </html>
