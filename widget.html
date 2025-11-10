@@ -4,41 +4,174 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Hochkar Buchungs-Widget</title>
+
   <style>
-    /* dein vorhandenes CSS bleibt unverändert */
-    *,*::before,*::after{box-sizing:border-box;}
-    body{margin:0;background:#f4f6f9;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:flex-start;justify-content:center;padding:24px;}
-    #hk-widget{max-width:720px;width:100%;background:#fff;border:1px solid #e6e6e9;border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.08);}
-    .hk-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;}
-    .hk-title{margin:0;font-size:22px;font-weight:800;line-height:1.2;}
-    .hk-subtitle{color:#6b7280;font-size:14px;}
-    .hk-logo{height:40px;width:auto;object-fit:contain;}
-    .hk-body{display:flex;gap:16px;flex-wrap:wrap;min-width:0;}
-    .hk-section{flex:1 1 300px;border:1px solid #ececf1;border-radius:12px;padding:14px;min-width:0;}
-    .hk-section-title{font-weight:600;margin-bottom:10px;}
-    .hk-daterow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:end;width:100%;}
-    .hk-datefield label{display:block;font-size:12px;color:#6b7280;margin:0 0 4px 0;line-height:1.2;}
-    input[type="date"]{display:block;width:100%;padding:10px;border:1px solid #d1d5db;border-radius:12px;background:#fff;color:#111827;font-size:14px;}
-    .hk-hint{margin-top:8px;color:#6b7280;font-size:12px;}
-    .hk-duration{margin-top:8px;font-size:13px;color:#111827;font-weight:600;}
-    .hk-counters{display:flex;flex-direction:column;gap:8px;}
-    .hk-counter-row{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;border:1px solid #ececf1;border-radius:12px;padding:12px;}
-    .hk-count{font-size:24px;font-weight:800;color:#111827;min-width:28px;text-align:center;}
-    .hk-label{font-weight:700;}
-    .hk-sublabel{color:#6b7280;font-size:12px;}
-    .hk-actions{display:flex;gap:8px;}
-    .hk-btn{width:36px;height:36px;border-radius:10px;border:1px solid #d1d5db;background:#fff;font-size:18px;line-height:34px;text-align:center;cursor:pointer;}
-    .hk-btn:disabled{opacity:.35;cursor:not-allowed;}
-    .hk-plus{font-weight:800;}
-    .hk-error{margin-top:8px;color:#b00020;font-size:14px;}
-    .hk-footer{margin-left:auto;margin-top:8px;}
-    .hk-cta{display:inline-block;padding:12px 18px;border-radius:12px;border:0;background:#154696;color:#fff;font-weight:700;cursor:pointer;min-width:140px;}
-    .hk-cta:hover{background:#103874;}
-    @media(max-width:510px){.hk-daterow{grid-template-columns:1fr}.hk-logo{height:32px}}
+    /* ---------------------------------------------------------
+       Basis & Layout
+       --------------------------------------------------------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body{
+      margin:0;
+      background:#f4f6f9;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:24px; /* => siehe BODY_PADDING im Resize-Script */
+    }
+
+    /* ---------------------------------------------------------
+       Widget-Container
+       --------------------------------------------------------- */
+    #hk-widget{
+      max-width:720px;
+      width:100%;
+      background:#fff;
+      border:1px solid #e6e6e9;
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 6px 18px rgba(0,0,0,.08);
+    }
+    #hk-widget * { box-sizing:border-box; }
+
+    /* Kopfzeile */
+    .hk-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:8px;
+    }
+    .hk-title{ margin:0; font-size:22px; font-weight:800; line-height:1.2; }
+    .hk-subtitle{ color:#6b7280; font-size:14px; }
+    .hk-logo{ height:40px; width:auto; object-fit:contain; }
+
+    /* Body-Bereiche */
+    .hk-body{ display:flex; gap:16px; flex-wrap:wrap; min-width:0; }
+    .hk-section{
+      flex:1 1 300px;
+      border:1px solid #ececf1;
+      border-radius:12px;
+      padding:14px;
+      min-width:0;
+    }
+    .hk-section-title{ font-weight:600; margin-bottom:10px; }
+
+    /* ---------------------------------------------------------
+       Datumsauswahl
+       --------------------------------------------------------- */
+    .hk-daterow{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:10px;
+      align-items:end;
+      width:100%;
+    }
+    .hk-datefield{ min-width:0; width:100%; }
+    .hk-datefield label{
+      display:block;
+      font-size:12px;
+      color:#6b7280;
+      margin:0 0 4px 0;
+      line-height:1.2;
+    }
+    input[type="date"]{
+      display:block;
+      width:100%;
+      max-width:100%;
+      padding:10px;
+      border:1px solid #d1d5db;
+      border-radius:12px;
+      background:#fff;
+      color:#111827;
+      font-size:14px;
+      line-height:1.2;
+      min-inline-size:0;
+      appearance:auto;
+      -webkit-appearance:auto;
+    }
+    .hk-hint{ margin-top:8px; color:#6b7280; font-size:12px; }
+    .hk-duration{ margin-top:8px; font-size:13px; color:#111827; font-weight:600; }
+
+    /* ---------------------------------------------------------
+       Zähler
+       --------------------------------------------------------- */
+    .hk-counters{ display:flex; flex-direction:column; gap:8px; }
+    .hk-counter-row{
+      display:grid;
+      grid-template-columns:40px 1fr auto;
+      gap:10px;
+      align-items:center;
+      border:1px solid #ececf1;
+      border-radius:12px;
+      padding:12px;
+    }
+    .hk-count{ font-size:24px; font-weight:800; color:#111827; min-width:28px; text-align:center; }
+    .hk-label{ font-weight:700; }
+    .hk-sublabel{ color:#6b7280; font-size:12px; }
+    .hk-actions{ display:flex; gap:8px; }
+    .hk-btn{
+      width:36px; height:36px;
+      border-radius:10px;
+      border:1px solid #d1d5db;
+      background:#fff;
+      font-size:18px;
+      line-height:34px;
+      text-align:center;
+      cursor:pointer;
+    }
+    .hk-btn:disabled{ opacity:.35; cursor:not-allowed; }
+    .hk-plus{ font-weight:800; }
+
+    .hk-error{ margin-top:8px; color:#b00020; font-size:14px; }
+    .hk-footer{ margin-left:auto; margin-top:8px; }
+
+    /* ---------------------------------------------------------
+       CTA-Button
+       --------------------------------------------------------- */
+    .hk-cta{
+      display:inline-block;
+      padding:12px 18px;
+      border-radius:12px;
+      border:0;
+      background:#154696;
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      min-width:140px;
+    }
+    .hk-cta:hover{ background:#103874; }
+    .hk-cta:focus{ outline:2px solid #103874; outline-offset:2px; }
+
+    /* ---------------------------------------------------------
+       Responsiv
+       --------------------------------------------------------- */
+    @media (max-width:510px){
+      .hk-daterow{ grid-template-columns:1fr; }
+      .hk-logo{ height:32px; }
+    }
+    #hk-widget.hk-narrow .hk-daterow{ grid-template-columns:1fr; }
+    #hk-widget.hk-narrow .hk-logo{ height:32px; }
+
+    /* ---------------------------------------------------------
+       iOS Safari Fixes (Optik)
+       --------------------------------------------------------- */
+    @supports (-webkit-touch-callout: none) {
+      .hk-section { overflow: clip; } /* verhindert Überstand an runden Ecken */
+      input[type="date"]{
+        -webkit-appearance: none;
+        appearance: none;
+        height: 44px;
+        line-height: 1;
+        padding: 10px;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div id="hk-widget">
+    <!-- Kopfbereich -->
     <div class="hk-header">
       <div class="hk-titles">
         <h3 class="hk-title"></h3>
@@ -47,8 +180,10 @@
       <img class="hk-logo" src="https://www.hochkar.com/portal/dist/images/branding/hochkar/logo.db33c945.png" alt="">
     </div>
 
+    <!-- Hauptbereich -->
     <div class="hk-body">
-      <div class="hk-section">
+      <!-- Datumsbereich -->
+      <div class="hk-section" id="hk-date-section">
         <div class="hk-section-title" id="i18n-date-section"></div>
 
         <div class="hk-daterow">
@@ -58,7 +193,7 @@
           </div>
           <div class="hk-datefield">
             <label for="hk-end" id="i18n-to"></label>
-            <input type="date" id="hk-end" disabled>
+            <input type="date" id="hk-end" placeholder="optional" disabled>
           </div>
         </div>
 
@@ -66,6 +201,7 @@
         <div class="hk-duration" id="hk-duration"></div>
       </div>
 
+      <!-- Personen -->
       <div class="hk-section hk-counters">
         <div class="hk-counter-row">
           <div class="hk-count" id="hk-adults-count">1</div>
@@ -92,132 +228,310 @@
         </div>
       </div>
 
+      <!-- Fehler & CTA -->
       <div id="hk-error" class="hk-error" style="display:none"></div>
       <div class="hk-footer"><button id="hk-submit" class="hk-cta" type="button"></button></div>
     </div>
   </div>
 
   <script>
-  // --- Sprachsteuerung ----------------------------------------------------
-  const I18N = {
-    de: {
-      title:"Skitickets", subtitle:"Stunden-, Tages- & Mehrtagestickets",
-      date_section:"Datumsbereich", from:"Von", to:"Bis",
-      hint:"Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.",
-      selected_duration:"Ausgewählte Dauer: {d} {day}",
-      day_one:"Tag", day_other:"Tage",
-      adult:"Erwachsen", adult_age:"Alter ab 16 Jahren",
-      child:"Kind", child_age:"Alter zwischen 6 und 15 Jahren",
-      error_start:"Bitte ein Startdatum wählen.",
-      error_duration:"Bitte eine Dauer zwischen 1 und 6 Tagen wählen.",
-      cta:"Weiter", logo_alt:"Hochkar Logo", date_unset:"Ausgewählte Dauer: –"
-    },
-    en: {
-      title:"Ski tickets", subtitle:"Hourly, Day & Multi-day tickets",
-      date_section:"Date range", from:"From", to:"To",
-      hint:"Bookable for 1–6 days. Leave “To” empty to book 1 day.",
-      selected_duration:"Selected duration: {d} {day}",
-      day_one:"day", day_other:"days",
-      adult:"Adult", adult_age:"Age 16 and over",
-      child:"Child", child_age:"Age 6 to 15",
-      error_start:"Please select a start date.",
-      error_duration:"Please choose a duration between 1 and 6 days.",
-      cta:"Continue", logo_alt:"Hochkar logo", date_unset:"Selected duration: –"
-    }
-  };
+    /* ---------------------------------------------------------
+       i18n: Deutsch & Englisch via ?lang=en|de (Fallback: Browser)
+       --------------------------------------------------------- */
+    const I18N = {
+      de: {
+        title: "Skitickets",
+        subtitle: "Stunden-, Tages- & Mehrtagestickets",
+        date_section: "Datumsbereich",
+        from: "Von",
+        to: "Bis",
+        hint: "Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.",
+        selected_duration: "Ausgewählte Dauer: {d} {day}",
+        day_one: "Tag",
+        day_other: "Tage",
+        adult: "Erwachsen",
+        adult_age: "Alter ab 16 Jahren",
+        child: "Kind",
+        child_age: "Alter zwischen 6 und 15 Jahren",
+        error_start: "Bitte ein Startdatum wählen.",
+        error_duration: "Bitte eine Dauer zwischen 1 und 6 Tagen wählen.",
+        cta: "Weiter",
+        logo_alt: "Hochkar Logo",
+        date_unset: "Ausgewählte Dauer: –"
+      },
+      en: {
+        title: "Ski tickets",
+        subtitle: "Hourly, Day & Multi-day tickets",
+        date_section: "Date range",
+        from: "From",
+        to: "To",
+        hint: "Bookable for 1–6 days. Leave “To” empty to book 1 day.",
+        selected_duration: "Selected duration: {d} {day}",
+        day_one: "day",
+        day_other: "days",
+        adult: "Adult",
+        adult_age: "Age 16 and over",
+        child: "Child",
+        child_age: "Age 6 to 15",
+        error_start: "Please select a start date.",
+        error_duration: "Please choose a duration between 1 and 6 days.",
+        cta: "Continue",
+        logo_alt: "Hochkar logo",
+        date_unset: "Selected duration: –"
+      }
+    };
 
-  function detectLang(){
-    const qp = new URLSearchParams(location.search).get('lang');
-    if(qp) return qp.split('-')[0].toLowerCase();
-    const nav=(navigator.language||'de').toLowerCase();
-    return nav.startsWith('en')?'en':'de';
-  }
-  let LANG=detectLang();
-  document.documentElement.lang=LANG;
-  function t(k){return (I18N[LANG]&&I18N[LANG][k])||(I18N.de[k]||k);}
-  function plural(n,one,other){return n===1?t(one):t(other);}
-  function applyI18n(){
-    document.querySelector('.hk-title').textContent=t('title');
-    document.querySelector('.hk-subtitle').textContent=t('subtitle');
-    document.querySelector('.hk-logo').alt=t('logo_alt');
-    document.getElementById('i18n-date-section').textContent=t('date_section');
-    document.getElementById('i18n-from').textContent=t('from');
-    document.getElementById('i18n-to').textContent=t('to');
-    document.getElementById('i18n-hint').textContent=t('hint');
-    document.getElementById('i18n-adult').textContent=t('adult');
-    document.getElementById('i18n-adult-age').textContent=t('adult_age');
-    document.getElementById('i18n-child').textContent=t('child');
-    document.getElementById('i18n-child-age').textContent=t('child_age');
-    document.getElementById('hk-submit').textContent=t('cta');
-    document.getElementById('hk-duration').textContent=t('date_unset');
-  }
-  document.addEventListener('DOMContentLoaded',applyI18n);
+    function detectLang() {
+      const qp = new URLSearchParams(location.search).get('lang');
+      if (qp) return qp.split('-')[0].toLowerCase();
+      const nav = (navigator.language || 'de').toLowerCase();
+      return nav.startsWith('en') ? 'en' : 'de';
+    }
+    let LANG = detectLang();
+    document.documentElement.setAttribute('lang', LANG);
+
+    function t(key){ return (I18N[LANG] && I18N[LANG][key]) || (I18N.de[key] || key); }
+    function plural(n, oneKey, otherKey){ return n === 1 ? t(oneKey) : t(otherKey); }
+
+    function applyI18nStaticTexts(){
+      document.querySelector('.hk-title').textContent = t('title');
+      document.querySelector('.hk-subtitle').textContent = t('subtitle');
+      const logo = document.querySelector('.hk-logo');
+      if (logo) logo.alt = t('logo_alt');
+
+      document.getElementById('i18n-date-section').textContent = t('date_section');
+      document.getElementById('i18n-from').textContent = t('from');
+      document.getElementById('i18n-to').textContent = t('to');
+      document.getElementById('i18n-hint').textContent = t('hint');
+
+      document.getElementById('i18n-adult').textContent = t('adult');
+      document.getElementById('i18n-adult-age').textContent = t('adult_age');
+      document.getElementById('i18n-child').textContent = t('child');
+      document.getElementById('i18n-child-age').textContent = t('child_age');
+
+      document.getElementById('hk-submit').textContent = t('cta');
+      document.getElementById('hk-duration').textContent = t('date_unset');
+    }
+    document.addEventListener('DOMContentLoaded', applyI18nStaticTexts);
   </script>
 
   <script>
-  // --- Rest deiner Logik bleibt wie gehabt, hier gekürzt ---
-  (function(){
-    const PRODUCT_URL="https://shop.hochkar.com/products/skitickets";
-    const MAX_DAYS=6;
-    const $=id=>document.getElementById(id);
-    const elStart=$("hk-start"),elEnd=$("hk-end"),err=$("hk-error"),dur=$("hk-duration");
-    const adultsCount=$("hk-adults-count"),kidsCount=$("hk-kids-count");
-    let adults=1,kids=0;
-    function setCount(type,v){
-      v=Math.max(0,Math.min(99,v|0));
-      if(type==="adults"){adults=v;adultsCount.textContent=v;}
-      else{kids=v;kidsCount.textContent=v;$("hk-kids-minus").disabled=v<=0;}
-    }
-    $("hk-adults-minus").onclick=()=>setCount("adults",adults-1);
-    $("hk-adults-plus").onclick=()=>setCount("adults",adults+1);
-    $("hk-kids-minus").onclick=()=>setCount("kids",kids-1);
-    $("hk-kids-plus").onclick=()=>setCount("kids",kids+1);
+    (function(){
+      /* ---------------------------------------------------------
+         Logik: UI, Validierung, Shop-URL (sprachabhängig)
+         --------------------------------------------------------- */
 
-    function addDaysISO(iso,n){const d=new Date(iso);d.setDate(d.getDate()+n);return d.toISOString().split("T")[0];}
-    function diffDays(s,e){return Math.round((new Date(e)-new Date(s))/86400000)+1;}
-    function clampDate(v,min,max){if(!v)return v;if(min&&v<min)return min;if(max&&v>max)return max;return v;}
-    function updateDuration(){
-      const s=elStart.value;const e=elEnd.value||s;
-      if(!s){dur.textContent=t('date_unset');return;}
-      const d=Math.max(1,Math.min(MAX_DAYS,diffDays(s,e)));
-      dur.textContent=t('selected_duration')
-        .replace('{d}',d)
-        .replace('{day}',plural(d,'day_one','day_other'));
-    }
-    ["input","change","blur"].forEach(evt=>{
-      elStart.addEventListener(evt,()=>{
-        if(!elStart.value){elEnd.value="";elEnd.disabled=true;dur.textContent=t('date_unset');return;}
-        elEnd.disabled=false;elEnd.min=elStart.value;elEnd.max=addDaysISO(elStart.value,MAX_DAYS-1);
-        elEnd.value=clampDate(elEnd.value||elStart.value,elEnd.min,elEnd.max);
+      // Sprachabhängige Shop-URL
+      function PRODUCT_URL(){
+        return (LANG === 'en')
+          ? 'https://shop.hochkar.com/en/products/skitickets'
+          : 'https://shop.hochkar.com/products/skitickets';
+      }
+
+      const MAX_DAYS = 6;
+
+      const $ = id => document.getElementById(id);
+      const widget = $("hk-widget");
+      const dateSection = $("hk-date-section");
+
+      /* Container-Responsive: wenn die Datums-Sektion < 520 px, Einspaltig erzwingen */
+      if (typeof ResizeObserver !== "undefined" && dateSection){
+        const ro = new ResizeObserver(entries => {
+          widget.classList.toggle("hk-narrow", entries[0].contentRect.width <= 520);
+        });
+        ro.observe(dateSection);
+      }
+
+      /* Referenzen */
+      const elStart = $("hk-start");
+      const elEnd = $("hk-end");
+      const err = $("hk-error");
+      const dur = $("hk-duration");
+      const adultsCount = $("hk-adults-count");
+      const kidsCount = $("hk-kids-count");
+
+      /* Zähler-Status */
+      let adults = 1, kids = 0;
+      function setCount(type, value){
+        value = Math.max(0, Math.min(99, value|0));
+        if (type === "adults"){
+          adults = value;
+          adultsCount.textContent = value;
+        } else {
+          kids = value;
+          kidsCount.textContent = value;
+          $("hk-kids-minus").disabled = value <= 0;
+        }
+      }
+
+      /* Counter-Buttons */
+      $("hk-adults-minus").onclick = () => setCount("adults", adults - 1);
+      $("hk-adults-plus").onclick = () => setCount("adults", adults + 1);
+      $("hk-kids-minus").onclick = () => setCount("kids", kids - 1);
+      $("hk-kids-plus").onclick = () => setCount("kids", kids + 1);
+
+      /* Helpers */
+      function toISODate(d){ return new Date(d).toISOString().split("T")[0]; }
+      function addDaysISO(iso, n){
+        const dt = new Date(iso);
+        dt.setDate(dt.getDate() + n);
+        return toISODate(dt);
+      }
+      function diffDays(start, end){
+        return Math.round((new Date(end) - new Date(start)) / 86400000) + 1;
+      }
+      function clampDate(value, min, max){
+        if (!value) return value;
+        if (min && value < min) return min;
+        if (max && value > max) return max;
+        return value;
+      }
+
+      /* Constraints für Enddatum */
+      function syncConstraints(){
+        const s = elStart.value;
+        if (!s){
+          elEnd.value = "";
+          elEnd.disabled = true;
+          dur.textContent = t("date_unset");
+          return;
+        }
+        elEnd.disabled = false;
+
+        elEnd.min = s;
+        elEnd.max = addDaysISO(s, MAX_DAYS - 1);
+
+        // Endwert hart in Range pressen
+        elEnd.value = clampDate(elEnd.value || s, elEnd.min, elEnd.max);
+
+        // Negativ-Dauer verhindern (Ende < Start)
+        if (elEnd.value < s) elEnd.value = s;
+
         updateDuration();
+      }
+
+      /* Anzeige der Dauer */
+      function updateDuration(){
+        const s = elStart.value;
+        const e = elEnd.value || s;
+
+        if (!s){
+          dur.textContent = t("date_unset");
+          return;
+        }
+
+        // Sicherheitsnetz: e in Range halten
+        const clampedE = clampDate(e, elStart.value, addDaysISO(elStart.value, MAX_DAYS - 1));
+        if (clampedE !== e) {
+          elEnd.value = clampedE;
+        }
+
+        // finale Dauer berechnen (nie < 1, nie > MAX_DAYS)
+        let d = diffDays(s, elEnd.value || s);
+        if (d < 1) { elEnd.value = s; d = 1; }
+        if (d > MAX_DAYS) { elEnd.value = addDaysISO(s, MAX_DAYS - 1); d = MAX_DAYS; }
+
+        const dayWord = plural(d, "day_one", "day_other");
+        dur.textContent = t("selected_duration").replace("{d}", d).replace("{day}", dayWord);
+      }
+
+      /* --- Event-Wiring (inkl. iOS) --- */
+      ["input","change","blur"].forEach(evt => {
+        elStart.addEventListener(evt, syncConstraints);
+        elEnd.addEventListener(evt, () => {
+          if (elStart.value){
+            elEnd.min = elStart.value;
+            elEnd.max = addDaysISO(elStart.value, MAX_DAYS - 1);
+            elEnd.value = clampDate(elEnd.value, elEnd.min, elEnd.max);
+            if (elEnd.value < elStart.value) elEnd.value = elStart.value;
+          }
+          updateDuration();
+        });
       });
-      elEnd.addEventListener(evt,updateDuration);
-    });
 
-    $("hk-submit").onclick=()=>{
-      err.style.display="none";
-      const s=elStart.value;if(!s){err.textContent=t('error_start');err.style.display="block";return;}
-      const e=elEnd.value||s;const d=diffDays(s,e);
-      if(d<1||d>MAX_DAYS){err.textContent=t('error_duration');err.style.display="block";return;}
-      const from=new Date(s+"T00:00:00"),to=new Date(e+"T23:59:59.999");
-      const alloc=[];if(adults>0)alloc.push({kind:"anonymous",quantity:adults,personType:"adult"});
-      if(kids>0)alloc.push({kind:"anonymous",quantity:kids,personType:"child"});
-      const formState={validity:{from:from.toISOString(),to:to.toISOString()},allocation:{kind:"persontype",values:alloc},attributes:{duration:"1d"}};
-      window.open(PRODUCT_URL+"?formState="+encodeURIComponent(JSON.stringify(formState)),"_blank","noopener");
-    };
-    setCount("adults",1);setCount("kids",0);
-  })();
+      /* Start initialisieren */
+      elStart.onchange = elStart.oninput = elStart.onblur = syncConstraints;
 
-  // --- iFrame-Auto-Resize bleibt unverändert ---
-  (function(){
-    var ROOT=document.getElementById('hk-widget');var BODY_PADDING=48;
-    function calcHeight(){return Math.ceil(ROOT.getBoundingClientRect().height)+BODY_PADDING;}
-    function post(reason){try{parent.postMessage({type:'HKWIDGET_HEIGHT',height:calcHeight(),reason:reason||''},'*');}catch(e){}}
-    window.addEventListener('load',()=>post('load'));window.addEventListener('resize',()=>post('resize'));
-    var mo=new MutationObserver(()=>{clearTimeout(post._t);post._t=setTimeout(()=>post('mut'),50);});
-    mo.observe(ROOT,{subtree:true,childList:true,attributes:true});
-    setTimeout(()=>post('delay300'),300);setTimeout(()=>post('delay1200'),1200);
-  })();
+      /* CTA klick -> Prüfen & Shop öffnen (sprachabhängige URL) */
+      $("hk-submit").onclick = () => {
+        err.style.display = "none";
+
+        const s = elStart.value;
+        if (!s){ err.textContent = t("error_start"); err.style.display = "block"; return; }
+
+        // final clamp before submit
+        syncConstraints();
+        updateDuration();
+
+        const e = elEnd.value || s;
+        const d = diffDays(s, e);
+
+        if (d < 1 || d > MAX_DAYS){
+          err.textContent = t("error_duration");
+          err.style.display = "block";
+          return;
+        }
+
+        const from = new Date(s + "T00:00:00");
+        const to = new Date(e + "T23:59:59.999");
+
+        const allocation = [];
+        const adults = parseInt(document.getElementById("hk-adults-count").textContent, 10) || 0;
+        const kids   = parseInt(document.getElementById("hk-kids-count").textContent, 10) || 0;
+
+        if (adults > 0) allocation.push({ kind:"anonymous", quantity:adults, personType:"adult" });
+        if (kids > 0) allocation.push({ kind:"anonymous", quantity:kids, personType:"child" });
+
+        const formState = {
+          validity: { from: from.toISOString(), to: to.toISOString() },
+          allocation: { kind: "persontype", values: allocation },
+          attributes: { duration: "1d" }
+        };
+
+        window.open(
+          PRODUCT_URL() + "?formState=" + encodeURIComponent(JSON.stringify(formState)),
+          "_blank",
+          "noopener"
+        );
+      };
+
+      /* Default-Zähler */
+      setCount("adults", 1);
+      setCount("kids", 0);
+    })();
+
+    /* ---------------------------------------------------------
+       Auto-Resize für iFrame-Einbettung
+       --------------------------------------------------------- */
+    (function(){
+      var ROOT = document.getElementById('hk-widget');
+      var BODY_PADDING = 48; // 24 + 24
+
+      function calcHeight(){
+        if (!ROOT) return 820;
+        return Math.ceil(ROOT.getBoundingClientRect().height) + BODY_PADDING;
+      }
+      function post(reason){
+        try{
+          parent.postMessage(
+            { type:'HKWIDGET_HEIGHT', height: calcHeight(), reason: reason||'' },
+            '*'
+          );
+        }catch(e){}
+      }
+
+      window.addEventListener('load', function(){ post('load'); });
+      window.addEventListener('resize', function(){ post('resize'); });
+
+      var mo = new MutationObserver(function(){
+        clearTimeout(post._t);
+        post._t = setTimeout(function(){ post('mut'); }, 50);
+      });
+      mo.observe(ROOT, { subtree:true, childList:true, attributes:true });
+
+      setTimeout(function(){ post('delay300'); }, 300);
+      setTimeout(function(){ post('delay1200'); }, 1200);
+    })();
   </script>
 </body>
 </html>
