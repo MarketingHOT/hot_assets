@@ -126,7 +126,7 @@
     .oe-footer{ margin-left:auto; margin-top:8px; }
 
     /* ---------------------------------------------------------
-       CTA-Button – CI-Farbe wie Hochkar
+       CTA-Button
        --------------------------------------------------------- */
     .oe-cta{
       display:inline-block;
@@ -173,32 +173,32 @@
     <!-- Kopfbereich -->
     <div class="oe-header">
       <div class="oe-titles">
-        <h3 class="oe-title">Skitickets</h3>
-        <div class="oe-subtitle">Stunden-, Tages- & Mehrtagestickets</div>
+        <h3 class="oe-title"></h3>
+        <div class="oe-subtitle"></div>
       </div>
       <!-- offizielles Ötscher-Logo -->
-      <img class="oe-logo" src="https://raw.githubusercontent.com/MarketingHOT/hot_assets/refs/heads/main/logo_rgb_oetscher.png" alt="Ötscher Logo">
+      <img class="oe-logo" src="https://raw.githubusercontent.com/MarketingHOT/hot_assets/refs/heads/main/logo_rgb_oetscher.png" alt="">
     </div>
 
     <!-- Hauptbereich -->
     <div class="oe-body">
       <!-- Datumsbereich -->
       <div class="oe-section" id="oe-date-section">
-        <div class="oe-section-title">Datumsbereich</div>
+        <div class="oe-section-title" id="i18n-date-section"></div>
 
         <div class="oe-daterow">
           <div class="oe-datefield">
-            <label for="oe-start">Von</label>
+            <label for="oe-start" id="i18n-from"></label>
             <input type="date" id="oe-start" required>
           </div>
           <div class="oe-datefield">
-            <label for="oe-end">Bis</label>
+            <label for="oe-end" id="i18n-to"></label>
             <input type="date" id="oe-end" placeholder="optional" disabled>
           </div>
         </div>
 
-        <div class="oe-hint">Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1&nbsp;Tag zu buchen.</div>
-        <div class="oe-duration" id="oe-duration">Ausgewählte Dauer: –</div>
+        <div class="oe-hint" id="i18n-hint"></div>
+        <div class="oe-duration" id="oe-duration"></div>
       </div>
 
       <!-- Personen -->
@@ -206,8 +206,8 @@
         <div class="oe-counter-row">
           <div class="oe-count" id="oe-adults-count">1</div>
           <div class="oe-labels">
-            <div class="oe-label">Erwachsen</div>
-            <div class="oe-sublabel">Alter ab 16&nbsp;Jahren</div>
+            <div class="oe-label" id="i18n-adult"></div>
+            <div class="oe-sublabel" id="i18n-adult-age"></div>
           </div>
           <div class="oe-actions">
             <button class="oe-btn oe-minus" id="oe-adults-minus" type="button">–</button>
@@ -218,8 +218,8 @@
         <div class="oe-counter-row">
           <div class="oe-count" id="oe-kids-count">0</div>
           <div class="oe-labels">
-            <div class="oe-label">Kind</div>
-            <div class="oe-sublabel">Alter zwischen 6 und 15&nbsp;Jahren</div>
+            <div class="oe-label" id="i18n-child"></div>
+            <div class="oe-sublabel" id="i18n-child-age"></div>
           </div>
           <div class="oe-actions">
             <button class="oe-btn oe-minus" id="oe-kids-minus" type="button" disabled>–</button>
@@ -230,17 +230,106 @@
 
       <!-- Fehler & CTA -->
       <div id="oe-error" class="oe-error" style="display:none"></div>
-      <div class="oe-footer"><button id="oe-submit" class="oe-cta" type="button">Weiter</button></div>
+      <div class="oe-footer"><button id="oe-submit" class="oe-cta" type="button"></button></div>
     </div>
   </div>
 
   <script>
+    /* ---------------------------------------------------------
+       i18n: Deutsch & Englisch via ?lang=en|de (Fallback: Browser)
+       --------------------------------------------------------- */
+    const I18N = {
+      de: {
+        title: "Skitickets",
+        subtitle: "Stunden-, Tages- & Mehrtagestickets",
+        date_section: "Datumsbereich",
+        from: "Von",
+        to: "Bis",
+        hint: "Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.",
+        selected_duration: "Ausgewählte Dauer: {d} {day}",
+        day_one: "Tag",
+        day_other: "Tage",
+        adult: "Erwachsen",
+        adult_age: "Alter ab 16 Jahren",
+        child: "Kind",
+        child_age: "Alter zwischen 6 und 15 Jahren",
+        error_start: "Bitte ein Startdatum wählen.",
+        error_duration: "Bitte eine Dauer zwischen 1 und 6 Tagen wählen.",
+        cta: "Weiter",
+        logo_alt: "Ötscher Logo",
+        date_unset: "Ausgewählte Dauer: –"
+      },
+      en: {
+        title: "Ski tickets",
+        subtitle: "Hourly, Day & Multi-day tickets",
+        date_section: "Date range",
+        from: "From",
+        to: "To",
+        hint: "Bookable for 1–6 days. Leave “To” empty to book 1 day.",
+        selected_duration: "Selected duration: {d} {day}",
+        day_one: "day",
+        day_other: "days",
+        adult: "Adult",
+        adult_age: "Age 16 and over",
+        child: "Child",
+        child_age: "Age 6 to 15",
+        error_start: "Please select a start date.",
+        error_duration: "Please choose a duration between 1 and 6 days.",
+        cta: "Continue",
+        logo_alt: "Ötscher logo",
+        date_unset: "Selected duration: –"
+      }
+    };
+
+    function detectLang() {
+      const qp = new URLSearchParams(location.search).get('lang');
+      if (qp) return qp.split('-')[0].toLowerCase();
+      const nav = (navigator.language || 'de').toLowerCase();
+      return nav.startsWith('en') ? 'en' : 'de';
+    }
+    let LANG = detectLang();
+    document.documentElement.setAttribute('lang', LANG);
+
+    function t(key){ return (I18N[LANG] && I18N[LANG][key]) || (I18N.de[key] || key); }
+    function plural(n, oneKey, otherKey){ return n === 1 ? t(oneKey) : t(otherKey); }
+
+    function applyI18nStaticTexts(){
+      document.querySelector('.oe-title').textContent = t('title');
+      document.querySelector('.oe-subtitle').textContent = t('subtitle');
+      const logo = document.querySelector('.oe-logo');
+      if (logo) logo.alt = t('logo_alt');
+
+      document.getElementById('i18n-date-section').textContent = t('date_section');
+      document.getElementById('i18n-from').textContent = t('from');
+      document.getElementById('i18n-to').textContent = t('to');
+      document.getElementById('i18n-hint').textContent = t('hint');
+
+      document.getElementById('i18n-adult').textContent = t('adult');
+      document.getElementById('i18n-adult-age').textContent = t('adult_age');
+      document.getElementById('i18n-child').textContent = t('child');
+      document.getElementById('i18n-child-age').textContent = t('child_age');
+
+      document.getElementById('oe-submit').textContent = t('cta');
+      document.getElementById('oe-duration').textContent = t('date_unset');
+    }
+    document.addEventListener('DOMContentLoaded', applyI18nStaticTexts);
+  </script>
+
+  <script>
   (function(){
     /* ---------------------------------------------------------
-       Produkt-URLs (Ötscher)
+       Produkt-URLs (Ötscher) – sprachabhängig
        --------------------------------------------------------- */
-    const PRODUCT_DAY   = "https://shop.oetscher.at/products/skitickets";
-    const PRODUCT_MULTI = "https://shop.oetscher.at/products/skitickets-pool";
+    function PRODUCT_DAY(){
+      return (LANG === 'en')
+        ? "https://shop.oetscher.at/en/products/skitickets"
+        : "https://shop.oetscher.at/products/skitickets";
+    }
+    function PRODUCT_MULTI(){
+      return (LANG === 'en')
+        ? "https://shop.oetscher.at/en/products/skitickets-pool"
+        : "https://shop.oetscher.at/products/skitickets-pool";
+    }
     const MAX_DAYS = 6;
 
     const $ = id => document.getElementById(id);
@@ -312,7 +401,7 @@
       if (!s){
         elEnd.value = "";
         elEnd.disabled = true;
-        dur.textContent = "Ausgewählte Dauer: –";
+        dur.textContent = t("date_unset");
         return;
       }
       elEnd.disabled = false;
@@ -332,7 +421,7 @@
       const e = elEnd.value || s;
 
       if (!s){
-        dur.textContent = "Ausgewählte Dauer: –";
+        dur.textContent = t("date_unset");
         return;
       }
 
@@ -344,7 +433,9 @@
       if (d < 1) { elEnd.value = s; d = 1; }
       if (d > MAX_DAYS) { elEnd.value = addDaysISO(s, MAX_DAYS - 1); d = MAX_DAYS; }
 
-      dur.textContent = `Ausgewählte Dauer: ${d} ${d === 1 ? "Tag" : "Tage"}`;
+      dur.textContent = t("selected_duration")
+        .replace("{d}", d)
+        .replace("{day}", (d === 1) ? t("day_one") : t("day_other"));
     }
 
     // iOS-relevant: auf input/change/blur reagieren
@@ -369,7 +460,7 @@
       err.style.display = "none";
 
       const s = elStart.value;
-      if (!s){ return showErr("Bitte ein Startdatum wählen."); }
+      if (!s){ return showErr(t("error_start")); }
 
       // final clamp before submit
       syncConstraints();
@@ -378,7 +469,7 @@
       const e = elEnd.value || s;
       const d = diffDays(s, e);
       if (d < 1 || d > MAX_DAYS){
-        return showErr("Bitte eine Dauer zwischen 1 und 6 Tagen wählen.");
+        return showErr(t("error_duration"));
       }
 
       const fromISO = toISO(s, false);
@@ -388,8 +479,8 @@
       if (adults > 0) allocation.push({ kind:"anonymous", quantity:adults, personType:"adult" });
       if (kids   > 0) allocation.push({ kind:"anonymous", quantity:kids,   personType:"child" });
 
-      // Produkt-Wahl: 1 Tag -> skitickets, sonst -> skitickets-pool
-      const product = (d === 1) ? PRODUCT_DAY : PRODUCT_MULTI;
+      // Produkt-Wahl: 1 Tag -> skitickets, sonst -> skitickets-pool; beide sprachabhängig
+      const product = (d === 1) ? PRODUCT_DAY() : PRODUCT_MULTI();
       const durationAttr = (d === 1) ? "1d" : (d + "d");
 
       const formState = {
@@ -405,8 +496,8 @@
       );
     };
 
-    function showErr(t){
-      err.textContent = t;
+    function showErr(tmsg){
+      err.textContent = tmsg;
       err.style.display = "block";
     }
 
@@ -414,7 +505,9 @@
     setCount("adults", 1);
     setCount("kids", 0);
   })();
+  </script>
 
+  <script>
   /* ---------------------------------------------------------
      Auto-Resize für iFrame-Einbettung
      --------------------------------------------------------- */
