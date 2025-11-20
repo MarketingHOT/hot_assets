@@ -109,6 +109,7 @@
   <div id="hk-widget">
     <div class="hk-header">
       <div class="hk-titles">
+        <!-- Platzhalter, wird per JS überschrieben -->
         <h3 class="hk-title">Skitickets</h3>
         <div class="hk-subtitle">Stunden-, Tages- & Mehrtagestickets</div>
       </div>
@@ -119,8 +120,14 @@
       <div class="hk-section" id="hk-date-section">
         <div class="hk-section-title">Datumsbereich</div>
         <div class="hk-daterow">
-          <div><label for="hk-start">Von</label><input type="date" id="hk-start" required></div>
-          <div><label for="hk-end">Bis</label><input type="date" id="hk-end" disabled></div>
+          <div>
+            <label for="hk-start">Von</label>
+            <input type="date" id="hk-start" required>
+          </div>
+          <div>
+            <label for="hk-end">Bis</label>
+            <input type="date" id="hk-end" disabled>
+          </div>
         </div>
         <div class="hk-hint">Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.</div>
         <div class="hk-duration" id="hk-duration">Ausgewählte Dauer: –</div>
@@ -129,75 +136,184 @@
       <div class="hk-section hk-counters">
         <div class="hk-counter-row">
           <div class="hk-count" id="hk-adults-count">1</div>
-          <div><div class="hk-label">Erwachsene</div><div class="hk-sublabel">ab 16 Jahren</div></div>
-          <div><button class="hk-btn" id="hk-adults-minus">–</button><button class="hk-btn" id="hk-adults-plus">+</button></div>
+          <div>
+            <div class="hk-label">Erwachsene</div>
+            <div class="hk-sublabel">ab 16 Jahren</div>
+          </div>
+          <div>
+            <button class="hk-btn" id="hk-adults-minus">–</button>
+            <button class="hk-btn" id="hk-adults-plus">+</button>
+          </div>
         </div>
         <div class="hk-counter-row">
           <div class="hk-count" id="hk-kids-count">0</div>
-          <div><div class="hk-label">Kinder</div><div class="hk-sublabel">6–15 Jahre</div></div>
-          <div><button class="hk-btn" id="hk-kids-minus" disabled>–</button><button class="hk-btn" id="hk-kids-plus">+</button></div>
+          <div>
+            <div class="hk-label">Kinder</div>
+            <div class="hk-sublabel">6–15 Jahre</div>
+          </div>
+          <div>
+            <button class="hk-btn" id="hk-kids-minus" disabled>–</button>
+            <button class="hk-btn" id="hk-kids-plus">+</button>
+          </div>
         </div>
       </div>
 
       <div id="hk-error" class="hk-error" style="display:none"></div>
-      <div class="hk-footer"><button id="hk-submit" class="hk-cta" type="button">Weiter</button></div>
+      <div class="hk-footer">
+        <button id="hk-submit" class="hk-cta" type="button">Weiter</button>
+      </div>
     </div>
   </div>
 
   <script>
   (function(){
-    // Sprache erkennen
-    const qs = new URLSearchParams(location.search);
-    const LANG = (qs.get('lang') || navigator.language || 'de').toLowerCase().startsWith('en') ? 'en' : 'de';
-    const MAX_DAYS = 6;
+    const qs   = new URLSearchParams(location.search);
+    const LANG = (qs.get('lang') || navigator.language || 'de')
+      .toLowerCase()
+      .startsWith('en') ? 'en' : 'de';
 
+    const TEXTS = {
+      de: {
+        title: "Skitickets",
+        subtitle: "Stunden-, Tages- & Mehrtagestickets",
+        dateSection: "Datumsbereich",
+        from: "Von",
+        to: "Bis",
+        hint: "Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.",
+        durationPrefix: "Ausgewählte Dauer:",
+        day: "Tag",
+        days: "Tage",
+        adults: "Erwachsene",
+        adultsSub: "ab 16 Jahren",
+        kids: "Kinder",
+        kidsSub: "6–15 Jahre",
+        cta: "Weiter",
+        errNoStart: "Bitte Startdatum wählen.",
+        errDuration: "Bitte Dauer zwischen 1 und 6 Tagen wählen."
+      },
+      en: {
+        title: "Ski tickets",
+        subtitle: "Hourly, day & multi-day tickets",
+        dateSection: "Date range",
+        from: "From",
+        to: "To",
+        hint: "You can book 1–6 days. Leave “To” empty to book 1 day.",
+        durationPrefix: "Selected duration:",
+        day: "day",
+        days: "days",
+        adults: "Adults",
+        adultsSub: "from 16 years",
+        kids: "Children",
+        kidsSub: "6–15 years",
+        cta: "Continue",
+        errNoStart: "Please select a start date.",
+        errDuration: "Please choose a duration between 1 and 6 days."
+      }
+    };
+
+    const MAX_DAYS = 6;
     const $ = id => document.getElementById(id);
 
-    const elStart = $("hk-start");
-    const elEnd   = $("hk-end");
-    const dur     = $("hk-duration");
-    const err     = $("hk-error");
-    const adultsCount = $("hk-adults-count");
-    const kidsCount   = $("hk-kids-count");
+    const elStart      = $("hk-start");
+    const elEnd        = $("hk-end");
+    const dur          = $("hk-duration");
+    const err          = $("hk-error");
+    const adultsCount  = $("hk-adults-count");
+    const kidsCount    = $("hk-kids-count");
+    const kidsMinusBtn = $("hk-kids-minus");
+
     let adults = 1, kids = 0;
+
+    function applyTranslations() {
+      const t = TEXTS[LANG];
+
+      // HTML lang-Attribut setzen (für Screenreader/SEO)
+      document.documentElement.lang = LANG;
+
+      document.querySelector(".hk-title").textContent = t.title;
+      document.querySelector(".hk-subtitle").textContent = t.subtitle;
+      document.querySelector("#hk-date-section .hk-section-title").textContent = t.dateSection;
+
+      document.querySelector('label[for="hk-start"]').textContent = t.from;
+      document.querySelector('label[for="hk-end"]').textContent   = t.to;
+      document.querySelector(".hk-hint").textContent              = t.hint;
+
+      const rows = document.querySelectorAll(".hk-counter-row");
+      // Erwachsene
+      rows[0].querySelector(".hk-label").textContent    = t.adults;
+      rows[0].querySelector(".hk-sublabel").textContent = t.adultsSub;
+      // Kinder
+      rows[1].querySelector(".hk-label").textContent    = t.kids;
+      rows[1].querySelector(".hk-sublabel").textContent = t.kidsSub;
+
+      $("hk-submit").textContent = t.cta;
+
+      // Initiale Dauer-Anzeige
+      dur.textContent = t.durationPrefix + " –";
+    }
 
     function setCount(type, value){
       value = Math.max(0, Math.min(99, value|0));
-      if (type==="adults"){ adults=value; adultsCount.textContent=value; }
-      else { kids=value; kidsCount.textContent=value; $("hk-kids-minus").disabled=value<=0; }
+      if (type === "adults") {
+        adults = value;
+        adultsCount.textContent = value;
+      } else {
+        kids = value;
+        kidsCount.textContent = value;
+        kidsMinusBtn.disabled = value <= 0;
+      }
     }
-    $("hk-adults-minus").onclick=()=>setCount("adults", adults-1);
-    $("hk-adults-plus").onclick =()=>setCount("adults", adults+1);
-    $("hk-kids-minus").onclick  =()=>setCount("kids", kids-1);
-    $("hk-kids-plus").onclick   =()=>setCount("kids", kids+1);
+
+    $("hk-adults-minus").onclick = () => setCount("adults", adults - 1);
+    $("hk-adults-plus").onclick  = () => setCount("adults", adults + 1);
+    $("hk-kids-minus").onclick   = () => setCount("kids", kids - 1);
+    $("hk-kids-plus").onclick    = () => setCount("kids", kids + 1);
 
     function toISODate(d){ return new Date(d).toISOString().split("T")[0]; }
-    function addDaysISO(iso,n){ const dt=new Date(iso); dt.setDate(dt.getDate()+n); return toISODate(dt);}
-    function diffDays(s,e){return Math.round((new Date(e)-new Date(s))/86400000)+1;}
-    function clampDate(v,min,max){ if(!v)return v; if(min&&v<min)return min; if(max&&v>max)return max; return v;}
-
-    function syncConstraints(){
-      const s=elStart.value;
-      if(!s){ elEnd.value=""; elEnd.disabled=true; dur.textContent="Ausgewählte Dauer: –"; return; }
-      elEnd.disabled=false; elEnd.min=s; elEnd.max=addDaysISO(s,MAX_DAYS-1);
-      elEnd.value=clampDate(elEnd.value||s,elEnd.min,elEnd.max);
-      updateDuration();
+    function addDaysISO(iso,n){ const dt=new Date(iso); dt.setDate(dt.getDate()+n); return toISODate(dt); }
+    function diffDays(s,e){ return Math.round((new Date(e)-new Date(s))/86400000) + 1; }
+    function clampDate(v,min,max){
+      if(!v) return v;
+      if(min && v < min) return min;
+      if(max && v > max) return max;
+      return v;
     }
 
     function updateDuration(){
-      const s=elStart.value; const e=elEnd.value||s;
-      if(!s){ dur.textContent="Ausgewählte Dauer: –"; return; }
-      const d=diffDays(s,e);
-      dur.textContent=`Ausgewählte Dauer: ${d} ${d===1?"Tag":"Tage"}`;
+      const t = TEXTS[LANG];
+      const s = elStart.value;
+      const e = elEnd.value || s;
+
+      if (!s) {
+        dur.textContent = t.durationPrefix + " –";
+        return;
+      }
+      const d = diffDays(s, e);
+      dur.textContent = `${t.durationPrefix} ${d} ${d === 1 ? t.day : t.days}`;
     }
 
-    ["input","change","blur"].forEach(evt=>{
-      elStart.addEventListener(evt,syncConstraints);
-      elEnd.addEventListener(evt,updateDuration);
+    function syncConstraints(){
+      const s = elStart.value;
+      if (!s) {
+        elEnd.value = "";
+        elEnd.disabled = true;
+        updateDuration();
+        return;
+      }
+      elEnd.disabled = false;
+      elEnd.min = s;
+      elEnd.max = addDaysISO(s, MAX_DAYS - 1);
+      elEnd.value = clampDate(elEnd.value || s, elEnd.min, elEnd.max);
+      updateDuration();
+    }
+
+    ["input","change","blur"].forEach(evt => {
+      elStart.addEventListener(evt, syncConstraints);
+      elEnd.addEventListener(evt, updateDuration);
     });
 
     function buildShopUrl(formState){
-      const base = (LANG==='en')
+      const base = (LANG === 'en')
         ? 'https://shop.hochkar.com/en/products/skitickets'
         : 'https://shop.hochkar.com/products/skitickets';
 
@@ -209,32 +325,55 @@
         utm_content:'widget'
       };
       const utms = { ...UTM_DEFAULT };
-      ['utm_source','utm_medium','utm_campaign','utm_content'].forEach(k=>{
-        if(qs.get(k)) utms[k]=qs.get(k);
+
+      ['utm_source','utm_medium','utm_campaign','utm_content'].forEach(k => {
+        if (qs.get(k)) utms[k] = qs.get(k);
       });
-      Object.entries(utms).forEach(([k,v])=>url.searchParams.set(k,v));
+
+      Object.entries(utms).forEach(([k,v]) => url.searchParams.set(k,v));
       url.searchParams.set('formState', JSON.stringify(formState));
       return url.toString();
     }
 
-    $("hk-submit").onclick=()=>{
-      err.style.display="none";
-      const s=elStart.value;
-      if(!s){ err.textContent="Bitte Startdatum wählen."; err.style.display="block"; return; }
-      const e=elEnd.value||s;
-      const d=diffDays(s,e);
-      if(d<1||d>MAX_DAYS){ err.textContent="Bitte Dauer zwischen 1 und 6 Tagen wählen."; err.style.display="block"; return; }
+    $("hk-submit").onclick = () => {
+      const t = TEXTS[LANG];
+      err.style.display = "none";
 
-      const from=new Date(s+"T00:00:00").toISOString();
-      const to=new Date(e+"T23:59:59.999").toISOString();
-      const allocation=[];
-      if(adults>0)allocation.push({kind:"anonymous",quantity:adults,personType:"adult"});
-      if(kids>0)allocation.push({kind:"anonymous",quantity:kids,personType:"child"});
-      const formState={validity:{from,to},allocation:{kind:"persontype",values:allocation},attributes:{duration:"1d"}};
-      window.open(buildShopUrl(formState),"_blank","noopener");
+      const s = elStart.value;
+      if (!s) {
+        err.textContent = t.errNoStart;
+        err.style.display = "block";
+        return;
+      }
+      const e = elEnd.value || s;
+      const d = diffDays(s, e);
+      if (d < 1 || d > MAX_DAYS) {
+        err.textContent = t.errDuration;
+        err.style.display = "block";
+        return;
+      }
+
+      const from = new Date(s + "T00:00:00").toISOString();
+      const to   = new Date(e + "T23:59:59.999").toISOString();
+
+      const allocation = [];
+      if (adults > 0) allocation.push({kind:"anonymous",quantity:adults,personType:"adult"});
+      if (kids   > 0) allocation.push({kind:"anonymous",quantity:kids,personType:"child"});
+
+      const formState = {
+        validity:{ from, to },
+        allocation:{ kind:"persontype", values:allocation },
+        attributes:{ duration:"1d" } // ggf. später dynamisch machen
+      };
+
+      window.open(buildShopUrl(formState), "_blank", "noopener");
     };
 
-    setCount("adults",1); setCount("kids",0);
+    // Initial
+    applyTranslations();
+    setCount("adults", 1);
+    setCount("kids", 0);
+    updateDuration();
   })();
 
   // --- Auto-Resize für iFrame ---
