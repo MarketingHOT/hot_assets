@@ -292,20 +292,23 @@
       dur.textContent = `${t.durationPrefix} ${d} ${d === 1 ? t.day : t.days}`;
     }
 
-    function syncConstraints(){
-      const s = elStart.value;
-      if (!s) {
-        elEnd.value = "";
-        elEnd.disabled = true;
-        updateDuration();
-        return;
-      }
-      elEnd.disabled = false;
-      elEnd.min = s;
-      elEnd.max = addDaysISO(s, MAX_DAYS - 1);
-      elEnd.value = clampDate(elEnd.value || s, elEnd.min, elEnd.max);
-      updateDuration();
-    }
+    function syncConstraints() {
+  const s = elStart.value;
+  if (!s) {
+    elEnd.value = "";
+    elEnd.disabled = true;
+    updateDuration();
+    return;
+  }
+
+  elEnd.disabled = false;
+  elEnd.min = s;
+  elEnd.max = addDaysISO(s, MAX_DAYS - 1);
+  elEnd.value = s;
+
+  updateDuration();
+}
+
 
     ["input","change","blur"].forEach(evt => {
       elStart.addEventListener(evt, syncConstraints);
