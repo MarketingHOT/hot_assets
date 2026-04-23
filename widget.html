@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Hochkar Buchungs-Widget</title>
 
-  <!-- Cabin Font -->
   <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -22,38 +21,46 @@
       display:flex;
       align-items:flex-start;
       justify-content:center;
-      padding:12px; /* etwas weniger links/rechts */
+      padding:12px;
       -webkit-text-size-adjust:100%;
     }
 
     #hk-widget{
-      max-width:720px;
+      max-width:860px; /* am PC etwas breiter */
       width:100%;
       background:#fff;
       border:1px solid #d5d9e2;
       border-radius:14px;
       padding:16px;
       box-shadow:0 6px 18px rgba(0,0,0,.06);
+      overflow:hidden;
     }
 
     .hk-header{
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
       gap:12px;
       margin-bottom:8px;
+    }
+
+    .hk-titles{
+      min-width:0;
+      flex:1 1 auto;
     }
 
     .hk-title{
       margin:0;
       font-size:22px;
       font-weight:800;
-      line-height:1.2;
+      line-height:1.15;
     }
 
     .hk-subtitle{
       color:#6b7280;
       font-size:14px;
+      line-height:1.3;
+      margin-top:2px;
     }
 
     .hk-logo{
@@ -71,7 +78,7 @@
     }
 
     .hk-section{
-      flex:1 1 300px;
+      flex:1 1 320px;
       border:1px solid #ececf1;
       border-radius:12px;
       padding:14px;
@@ -80,13 +87,12 @@
     }
 
     .hk-section-title{
-      font-weight:600;
+      font-weight:700;
       margin-bottom:10px;
+      font-size:16px;
     }
 
-    /* -------------------------------
-       Datumsauswahl
-       ------------------------------- */
+    /* Datum */
     .hk-daterow{
       display:grid;
       grid-template-columns:minmax(0,1fr) minmax(0,1fr);
@@ -109,13 +115,21 @@
       font-weight:600;
     }
 
+    .hk-datewrap{
+      position:relative;
+      width:100%;
+      min-width:0;
+      max-width:100%;
+      overflow:hidden;
+    }
+
     input[type="date"]{
       display:block;
       width:100%;
       max-width:100%;
       min-width:0;
       height:44px;
-      padding:10px 12px;
+      padding:10px 42px 10px 12px;
       border:1px solid #d1d5db;
       border-radius:12px;
       background:#fff;
@@ -125,6 +139,26 @@
       font-family:'Cabin', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       appearance:auto;
       -webkit-appearance:auto;
+    }
+
+    .hk-dateicon{
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      width:18px;
+      height:18px;
+      pointer-events:none;
+      color:#6b7280;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .hk-dateicon svg{
+      width:18px;
+      height:18px;
+      display:block;
     }
 
     .hk-hint{
@@ -140,9 +174,7 @@
       font-weight:600;
     }
 
-    /* -------------------------------
-       Counter
-       ------------------------------- */
+    /* Counter */
     .hk-counters{
       display:flex;
       flex-direction:column;
@@ -151,13 +183,13 @@
 
     .hk-counter-row{
       display:grid;
-      grid-template-columns:40px minmax(0,1fr) auto;
-      gap:10px;
+      grid-template-columns:46px minmax(0,1fr) auto;
+      gap:12px;
       align-items:center;
       border:1px solid #ececf1;
       border-radius:12px;
       padding:12px;
-      min-height:74px; /* sorgt für einheitliche Optik */
+      min-height:76px;
     }
 
     .hk-count{
@@ -165,10 +197,14 @@
       font-weight:800;
       text-align:center;
       min-width:28px;
+      line-height:1;
     }
 
     .hk-labelgroup{
       min-width:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
     }
 
     .hk-label{
@@ -176,6 +212,7 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+      line-height:1.2;
     }
 
     .hk-sublabel{
@@ -184,6 +221,8 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+      line-height:1.2;
+      margin-top:2px;
     }
 
     .hk-actions{
@@ -193,8 +232,8 @@
     }
 
     .hk-btn{
-      width:36px;
-      height:36px;
+      width:38px;
+      height:38px;
       border-radius:10px;
       border:1px solid #d1d5db;
       background:#fff;
@@ -204,6 +243,7 @@
       font-family:'Cabin', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       touch-action:manipulation;
       -webkit-tap-highlight-color:transparent;
+      user-select:none;
     }
 
     .hk-btn:disabled{
@@ -240,10 +280,8 @@
       background:#103874;
     }
 
-    /* -------------------------------
-       Mobile allgemein
-       ------------------------------- */
-    @media (max-width: 640px){
+    /* Allgemein Mobile */
+    @media (max-width: 768px){
       .hk-daterow{
         grid-template-columns:1fr;
       }
@@ -251,18 +289,49 @@
       .hk-logo{
         height:32px;
       }
+    }
+
+    /* iPhone / iOS Safari */
+    @supports (-webkit-touch-callout: none) {
+      body{
+        padding:10px;
+      }
+
+      .hk-daterow{
+        grid-template-columns:1fr !important;
+      }
+
+      .hk-datefield,
+      .hk-datewrap{
+        width:100%;
+        min-width:0;
+        max-width:100%;
+        overflow:hidden;
+      }
+
+      input[type="date"]{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:100% !important;
+        height:48px;
+        font-size:16px; /* verhindert iOS Zoom */
+        padding:10px 40px 10px 12px;
+        border-radius:12px;
+      }
+
+      .hk-dateicon{
+        right:10px;
+      }
 
       .hk-counter-row{
-        grid-template-columns:36px minmax(0,1fr) auto;
-        gap:8px;
-        padding:10px;
-        min-height:68px;
+        grid-template-columns:42px minmax(0,1fr) auto;
+        gap:10px;
+        min-height:72px;
       }
 
       .hk-btn{
-        width:34px;
-        height:34px;
-        font-size:18px;
+        width:36px;
+        height:36px;
       }
 
       .hk-label{
@@ -271,19 +340,6 @@
 
       .hk-sublabel{
         font-size:12px;
-      }
-    }
-
-    /* iPhone / iOS Safari: Datumsfelder immer untereinander,
-       weil Safari bei date inputs gerne Mindestbreiten erzwingt */
-    @supports (-webkit-touch-callout: none) {
-      .hk-daterow{
-        grid-template-columns:1fr;
-      }
-
-      input[type="date"]{
-        width:100%;
-        min-width:0;
       }
     }
   </style>
@@ -306,12 +362,32 @@
         <div class="hk-daterow">
           <div class="hk-datefield">
             <label for="hk-start">Von</label>
-            <input type="date" id="hk-start" required>
+            <div class="hk-datewrap">
+              <input type="date" id="hk-start" required>
+              <span class="hk-dateicon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                  <line x1="16" y1="3" x2="16" y2="7"></line>
+                  <line x1="8" y1="3" x2="8" y2="7"></line>
+                  <line x1="3" y1="11" x2="21" y2="11"></line>
+                </svg>
+              </span>
+            </div>
           </div>
 
           <div class="hk-datefield">
             <label for="hk-end">Bis</label>
-            <input type="date" id="hk-end" disabled>
+            <div class="hk-datewrap">
+              <input type="date" id="hk-end" disabled>
+              <span class="hk-dateicon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                  <line x1="16" y1="3" x2="16" y2="7"></line>
+                  <line x1="8" y1="3" x2="8" y2="7"></line>
+                  <line x1="3" y1="11" x2="21" y2="11"></line>
+                </svg>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -447,19 +523,29 @@
       }
     }
 
-    function bindTap(id, handler){
+    function bindPress(id, handler){
       const el = $(id);
-      el.addEventListener('click', handler, { passive: true });
+      let touchedAt = 0;
+
       el.addEventListener('touchend', function(e){
+        touchedAt = Date.now();
         e.preventDefault();
         handler();
       }, { passive: false });
+
+      el.addEventListener('click', function(e){
+        if (Date.now() - touchedAt < 700) {
+          e.preventDefault();
+          return;
+        }
+        handler();
+      });
     }
 
-    bindTap("hk-adults-minus", () => setCount("adults", adults - 1));
-    bindTap("hk-adults-plus",  () => setCount("adults", adults + 1));
-    bindTap("hk-kids-minus",   () => setCount("kids", kids - 1));
-    bindTap("hk-kids-plus",    () => setCount("kids", kids + 1));
+    bindPress("hk-adults-minus", () => setCount("adults", adults - 1));
+    bindPress("hk-adults-plus",  () => setCount("adults", adults + 1));
+    bindPress("hk-kids-minus",   () => setCount("kids", kids - 1));
+    bindPress("hk-kids-plus",    () => setCount("kids", kids + 1));
 
     function toISODate(d){
       return new Date(d).toISOString().split("T")[0];
@@ -580,10 +666,10 @@
     updateDuration();
   })();
 
-  /* --- Auto-Resize für iFrame --- */
+  /* Auto-Resize für iFrame */
   (function(){
     const ROOT = document.getElementById('hk-widget');
-    const BODY_PADDING = 24; // 12px oben + 12px unten
+    const BODY_PADDING = 24;
 
     function calcHeight(){
       return Math.ceil(ROOT.getBoundingClientRect().height) + BODY_PADDING;
