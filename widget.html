@@ -166,7 +166,8 @@
       border-color: #9db1ce;
     }
 
-    .hk-datebutton:focus-visible {
+    .hk-datebutton:focus-visible,
+    .hk-datebutton.is-active {
       outline: none;
       border-color: var(--hk-primary);
       box-shadow: 0 0 0 4px rgba(21, 70, 150, 0.12);
@@ -332,14 +333,15 @@
     }
 
     .hk-datepicker {
-      grid-column: 1 / -1;
       width: 100%;
       max-width: 100%;
+      margin-top: 12px;
       border: 1px solid var(--hk-border);
       border-radius: 16px;
       background: #fff;
       padding: 12px;
       box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
     }
 
     .hk-datepicker[hidden] {
@@ -591,6 +593,8 @@
           </div>
         </div>
 
+        <div id="hk-datepicker" class="hk-datepicker" hidden></div>
+
         <div class="hk-hint">Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.</div>
         <div class="hk-duration" id="hk-duration">Ausgewählte Dauer: –</div>
       </div>
@@ -620,8 +624,6 @@
           </div>
         </div>
       </div>
-
-      <div id="hk-datepicker" class="hk-datepicker" hidden></div>
 
       <div id="hk-error" class="hk-error" style="display:none"></div>
 
@@ -824,6 +826,9 @@
           els.endBtn.classList.add("is-placeholder");
         }
 
+        els.startBtn.classList.toggle("is-active", state.pickerMode === "start");
+        els.endBtn.classList.toggle("is-active", state.pickerMode === "end");
+
         const duration = diffDays(state.start, state.end || state.start);
         els.duration.textContent = `${t.durationPrefix} ${duration} ${duration === 1 ? t.day : t.days}`;
 
@@ -839,8 +844,15 @@
         postHeight("render");
       }
 
-      function openPicker(mode) {
+      function togglePicker(mode) {
         hideError();
+
+        if (state.pickerMode === mode) {
+          state.pickerMode = null;
+          render();
+          return;
+        }
+
         state.pickerMode = mode;
         state.pickerMonth = firstOfMonth(mode === "end" && state.end ? state.end : state.start);
         render();
@@ -1021,8 +1033,8 @@
       }
 
       function bindEvents() {
-        els.startBtn.addEventListener("click", () => openPicker("start"));
-        els.endBtn.addEventListener("click", () => openPicker("end"));
+        els.startBtn.addEventListener("click", () => togglePicker("start"));
+        els.endBtn.addEventListener("click", () => togglePicker("end"));
 
         els.adultsMinus.addEventListener("click", () => setCount("adults", -1));
         els.adultsPlus.addEventListener("click", () => setCount("adults", 1));
