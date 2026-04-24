@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Hochkar Buchungs-Widget</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,7 +11,6 @@
     :root {
       --hk-bg: #ffffff;
       --hk-surface: #f8fafc;
-      --hk-surface-2: #f1f5f9;
       --hk-border: #dbe3ee;
       --hk-border-strong: #c4cfdd;
       --hk-text: #0f172a;
@@ -21,10 +20,6 @@
       --hk-primary-soft: rgba(21, 70, 150, 0.08);
       --hk-danger: #b00020;
       --hk-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-      --hk-radius-xl: 18px;
-      --hk-radius-lg: 14px;
-      --hk-radius-md: 12px;
-      --hk-radius-sm: 10px;
     }
 
     *, *::before, *::after {
@@ -34,25 +29,32 @@
     html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
       background: transparent !important;
     }
 
     body {
       font-family: 'Cabin', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       display: flex;
-      align-items: flex-start;
       justify-content: center;
       padding: 12px;
-      -webkit-text-size-adjust: 100%;
       color: var(--hk-text);
+      -webkit-text-size-adjust: 100%;
+    }
+
+    button {
+      font-family: inherit;
     }
 
     #hk-widget {
-      max-width: 880px;
       width: 100%;
-      background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(248,250,252,1) 100%);
+      max-width: 880px;
+      min-width: 0;
+      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
       border: 1px solid var(--hk-border);
-      border-radius: var(--hk-radius-xl);
+      border-radius: 18px;
       padding: 20px;
       box-shadow: var(--hk-shadow);
       overflow: hidden;
@@ -66,6 +68,7 @@
       margin-bottom: 16px;
       padding-bottom: 14px;
       border-bottom: 1px solid rgba(219, 227, 238, 0.8);
+      min-width: 0;
     }
 
     .hk-titles {
@@ -78,20 +81,20 @@
       font-size: 24px;
       font-weight: 800;
       line-height: 1.1;
-      color: var(--hk-text);
       letter-spacing: -0.02em;
     }
 
     .hk-subtitle {
+      margin-top: 4px;
       color: var(--hk-text-soft);
       font-size: 14px;
       line-height: 1.35;
-      margin-top: 4px;
     }
 
     .hk-logo {
       height: 42px;
       width: auto;
+      max-width: 130px;
       object-fit: contain;
       flex-shrink: 0;
     }
@@ -100,33 +103,29 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 16px;
-      min-width: 0;
       align-items: start;
+      min-width: 0;
     }
 
     .hk-section {
-      background: rgba(255,255,255,0.85);
+      min-width: 0;
+      background: rgba(255, 255, 255, 0.88);
       border: 1px solid var(--hk-border);
       border-radius: 16px;
       padding: 16px;
-      min-width: 0;
-      overflow: hidden;
-      backdrop-filter: blur(4px);
+      overflow: visible;
     }
 
     .hk-section-title {
-      font-weight: 800;
       margin-bottom: 12px;
       font-size: 16px;
-      color: var(--hk-text);
-      letter-spacing: -0.01em;
+      font-weight: 800;
     }
 
     .hk-daterow {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 12px;
-      align-items: end;
       width: 100%;
       min-width: 0;
     }
@@ -134,74 +133,59 @@
     .hk-datefield {
       min-width: 0;
       width: 100%;
+      position: relative;
     }
 
     .hk-datefield label {
       display: block;
-      font-size: 12px;
-      color: var(--hk-text-soft);
       margin-bottom: 6px;
+      font-size: 12px;
       font-weight: 700;
-      letter-spacing: 0.01em;
+      color: var(--hk-text-soft);
     }
 
-    .hk-inputwrap {
-      position: relative;
+    .hk-datebutton {
       width: 100%;
-    }
-
-    .hk-dateinput {
-      width: 100%;
-      height: 48px;
-      padding: 10px 44px 10px 14px;
+      min-width: 0;
+      min-height: 48px;
+      padding: 11px 42px 11px 14px;
       border: 1px solid var(--hk-border-strong);
       border-radius: 14px;
       background: #fff;
       color: var(--hk-text);
-      font-size: 14px;
-      line-height: 1.2;
-      font-family: 'Cabin', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
-      transition:
-        border-color 0.18s ease,
-        background 0.18s ease,
-        box-shadow 0.18s ease;
-      appearance: auto;
-      -webkit-appearance: auto;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: left;
       cursor: pointer;
+      position: relative;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .hk-dateinput:hover:not(:disabled) {
+    .hk-datebutton:hover {
       border-color: #9db1ce;
-      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.05);
     }
 
-    .hk-dateinput:focus {
+    .hk-datebutton:focus-visible {
       outline: none;
       border-color: var(--hk-primary);
       box-shadow: 0 0 0 4px rgba(21, 70, 150, 0.12);
     }
 
-    .hk-dateinput:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      background: #f8fafc;
-      border-color: var(--hk-border);
-      box-shadow: none;
+    .hk-datebutton.is-placeholder {
+      color: var(--hk-text-soft);
+      font-weight: 600;
     }
 
     .hk-dateicon {
       position: absolute;
       right: 14px;
       top: 50%;
-      transform: translateY(-50%);
       width: 18px;
       height: 18px;
-      pointer-events: none;
+      transform: translateY(-50%);
       color: var(--hk-text-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      pointer-events: none;
     }
 
     .hk-dateicon svg {
@@ -239,17 +223,12 @@
       grid-template-columns: 56px minmax(0, 1fr) auto;
       gap: 12px;
       align-items: center;
-      border: 1px solid var(--hk-border);
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-      border-radius: 16px;
-      padding: 12px;
       min-height: 82px;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
-    }
-
-    .hk-counter-row:hover {
-      border-color: #bfd0e6;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+      padding: 12px;
+      border: 1px solid var(--hk-border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+      min-width: 0;
     }
 
     .hk-count {
@@ -260,37 +239,28 @@
       border: 1px solid #d5e1f2;
       font-size: 24px;
       font-weight: 800;
-      text-align: center;
       line-height: 54px;
+      text-align: center;
       color: var(--hk-primary);
-      flex-shrink: 0;
     }
 
     .hk-labelgroup {
       min-width: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
     }
 
     .hk-label {
-      font-weight: 800;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.2;
-      color: var(--hk-text);
       font-size: 16px;
+      font-weight: 800;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
     }
 
     .hk-sublabel {
+      margin-top: 3px;
       color: var(--hk-text-soft);
       font-size: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       line-height: 1.25;
-      margin-top: 3px;
+      overflow-wrap: anywhere;
     }
 
     .hk-actions {
@@ -300,47 +270,33 @@
     }
 
     .hk-btn {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
       border: 1px solid var(--hk-border-strong);
       background: #fff;
-      font-size: 20px;
+      color: var(--hk-text);
+      font-size: 22px;
+      font-weight: 800;
       line-height: 1;
       cursor: pointer;
-      font-family: 'Cabin', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      font-weight: 700;
-      color: var(--hk-text);
-      transition:
-        background 0.18s ease,
-        border-color 0.18s ease,
-        transform 0.12s ease,
-        box-shadow 0.18s ease;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
     }
 
     .hk-btn:hover:not(:disabled) {
       background: #f8fafc;
       border-color: #9db1ce;
-      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
-    }
-
-    .hk-btn:active:not(:disabled) {
-      transform: translateY(1px);
     }
 
     .hk-btn:disabled {
       opacity: 0.35;
       cursor: not-allowed;
-      box-shadow: none;
     }
 
     .hk-error {
       grid-column: 1 / -1;
-      margin-top: -4px;
       color: var(--hk-danger);
       font-size: 14px;
       font-weight: 700;
@@ -354,36 +310,143 @@
       grid-column: 1 / -1;
       display: flex;
       justify-content: flex-end;
-      margin-top: 2px;
     }
 
     .hk-cta {
+      min-width: 160px;
       padding: 14px 22px;
-      border-radius: 14px;
       border: 0;
+      border-radius: 14px;
       background: linear-gradient(180deg, var(--hk-primary) 0%, #123d85 100%);
       color: #fff;
-      font-weight: 800;
       font-size: 15px;
+      font-weight: 800;
       cursor: pointer;
-      min-width: 160px;
-      font-family: 'Cabin', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      box-shadow: 0 10px 20px rgba(21, 70, 150, 0.22);
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
-      transition:
-        background 0.18s ease,
-        transform 0.12s ease,
-        box-shadow 0.18s ease;
-      box-shadow: 0 10px 20px rgba(21, 70, 150, 0.22);
     }
 
     .hk-cta:hover {
       background: linear-gradient(180deg, #1a4fa9 0%, var(--hk-primary-hover) 100%);
-      box-shadow: 0 12px 24px rgba(21, 70, 150, 0.28);
     }
 
-    .hk-cta:active {
-      transform: translateY(1px);
+    .hk-datepicker {
+      grid-column: 1 / -1;
+      width: 100%;
+      max-width: 100%;
+      border: 1px solid var(--hk-border);
+      border-radius: 16px;
+      background: #fff;
+      padding: 12px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+    }
+
+    .hk-datepicker[hidden] {
+      display: none !important;
+    }
+
+    .hk-cal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .hk-cal-title {
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+      flex: 1;
+    }
+
+    .hk-cal-nav {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      border: 1px solid var(--hk-border-strong);
+      background: #fff;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .hk-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .hk-cal-weekday {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--hk-text-soft);
+      text-align: center;
+      padding: 4px 0;
+    }
+
+    .hk-cal-day {
+      min-width: 0;
+      height: 40px;
+      border-radius: 11px;
+      border: 1px solid transparent;
+      background: #f8fafc;
+      color: var(--hk-text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .hk-cal-day:hover:not(:disabled) {
+      border-color: #9db1ce;
+      background: #fff;
+    }
+
+    .hk-cal-day.is-selected {
+      background: var(--hk-primary);
+      color: #fff;
+      border-color: var(--hk-primary);
+    }
+
+    .hk-cal-day.is-today:not(.is-selected) {
+      border-color: var(--hk-primary);
+      color: var(--hk-primary);
+      background: var(--hk-primary-soft);
+    }
+
+    .hk-cal-day:disabled {
+      opacity: 0.28;
+      cursor: not-allowed;
+    }
+
+    .hk-cal-empty {
+      height: 40px;
+    }
+
+    .hk-cal-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .hk-cal-action {
+      border: 1px solid var(--hk-border-strong);
+      background: #fff;
+      border-radius: 11px;
+      padding: 10px 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .hk-cal-action.primary {
+      background: var(--hk-primary);
+      border-color: var(--hk-primary);
+      color: #fff;
     }
 
     @media (max-width: 900px) {
@@ -393,6 +456,10 @@
     }
 
     @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
       #hk-widget {
         padding: 16px;
         border-radius: 16px;
@@ -402,12 +469,34 @@
         align-items: flex-start;
       }
 
-      .hk-daterow {
-        grid-template-columns: 1fr;
+      .hk-title {
+        font-size: 22px;
       }
 
       .hk-logo {
         height: 32px;
+        max-width: 110px;
+      }
+
+      .hk-daterow {
+        grid-template-columns: 1fr;
+      }
+
+      .hk-counter-row {
+        grid-template-columns: 50px minmax(0, 1fr) auto;
+        gap: 10px;
+      }
+
+      .hk-count {
+        width: 50px;
+        height: 50px;
+        line-height: 48px;
+        font-size: 22px;
+      }
+
+      .hk-btn {
+        width: 40px;
+        height: 40px;
       }
 
       .hk-footer {
@@ -417,51 +506,40 @@
       .hk-cta {
         width: 100%;
       }
+
+      .hk-cal-day {
+        height: 38px;
+        font-size: 13px;
+      }
     }
 
-    @supports (-webkit-touch-callout: none) {
-      body {
-        padding: 10px;
+    @media (max-width: 380px) {
+      #hk-widget {
+        padding: 12px;
       }
 
-      .hk-daterow {
-        grid-template-columns: 1fr !important;
-      }
-
-      .hk-dateinput {
-        font-size: 16px;
-        height: 48px;
-      }
-
-      .hk-dateicon {
-        right: 12px;
+      .hk-section {
+        padding: 12px;
       }
 
       .hk-counter-row {
-        grid-template-columns: 50px minmax(0, 1fr) auto;
-        gap: 10px;
-        min-height: 76px;
+        grid-template-columns: 44px minmax(0, 1fr) auto;
       }
 
       .hk-count {
-        width: 50px;
-        height: 50px;
-        line-height: 48px;
-        font-size: 22px;
-        border-radius: 14px;
+        width: 44px;
+        height: 44px;
+        line-height: 42px;
+        font-size: 20px;
+      }
+
+      .hk-actions {
+        gap: 6px;
       }
 
       .hk-btn {
         width: 38px;
         height: 38px;
-      }
-
-      .hk-label {
-        font-size: 15px;
-      }
-
-      .hk-sublabel {
-        font-size: 12px;
       }
     }
   </style>
@@ -474,11 +552,7 @@
         <h3 class="hk-title">Skitickets</h3>
         <div class="hk-subtitle">Stunden-, Tages- & Mehrtagestickets</div>
       </div>
-      <img
-        class="hk-logo"
-        src="https://www.hochkar.com/portal/dist/images/branding/hochkar/logo.db33c945.png"
-        alt="Hochkar Logo"
-      >
+      <img class="hk-logo" src="https://www.hochkar.com/portal/dist/images/branding/hochkar/logo.db33c945.png" alt="Hochkar Logo">
     </div>
 
     <div class="hk-body">
@@ -487,9 +561,9 @@
 
         <div class="hk-daterow">
           <div class="hk-datefield">
-            <label for="hk-start">Von</label>
-            <div class="hk-inputwrap">
-              <input type="date" id="hk-start" class="hk-dateinput" required>
+            <label id="hk-start-label">Von</label>
+            <button class="hk-datebutton" id="hk-start-btn" type="button">
+              <span id="hk-start-text"></span>
               <span class="hk-dateicon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="5" width="18" height="16" rx="2"></rect>
@@ -498,13 +572,13 @@
                   <line x1="3" y1="11" x2="21" y2="11"></line>
                 </svg>
               </span>
-            </div>
+            </button>
           </div>
 
           <div class="hk-datefield">
-            <label for="hk-end">Bis</label>
-            <div class="hk-inputwrap">
-              <input type="date" id="hk-end" class="hk-dateinput" disabled>
+            <label id="hk-end-label">Bis</label>
+            <button class="hk-datebutton is-placeholder" id="hk-end-btn" type="button">
+              <span id="hk-end-text"></span>
               <span class="hk-dateicon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="5" width="18" height="16" rx="2"></rect>
@@ -513,7 +587,7 @@
                   <line x1="3" y1="11" x2="21" y2="11"></line>
                 </svg>
               </span>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -525,11 +599,11 @@
         <div class="hk-counter-row">
           <div class="hk-count" id="hk-adults-count">1</div>
           <div class="hk-labelgroup">
-            <div class="hk-label">Erwachsene</div>
-            <div class="hk-sublabel">ab 16 Jahren</div>
+            <div class="hk-label" id="hk-adults-label">Erwachsene</div>
+            <div class="hk-sublabel" id="hk-adults-sub">ab 16 Jahren</div>
           </div>
           <div class="hk-actions">
-            <button class="hk-btn" id="hk-adults-minus" type="button">–</button>
+            <button class="hk-btn" id="hk-adults-minus" type="button">−</button>
             <button class="hk-btn" id="hk-adults-plus" type="button">+</button>
           </div>
         </div>
@@ -537,15 +611,17 @@
         <div class="hk-counter-row">
           <div class="hk-count" id="hk-kids-count">0</div>
           <div class="hk-labelgroup">
-            <div class="hk-label">Kinder</div>
-            <div class="hk-sublabel">6–15 Jahre</div>
+            <div class="hk-label" id="hk-kids-label">Kinder</div>
+            <div class="hk-sublabel" id="hk-kids-sub">6–15 Jahre</div>
           </div>
           <div class="hk-actions">
-            <button class="hk-btn" id="hk-kids-minus" type="button" disabled>–</button>
+            <button class="hk-btn" id="hk-kids-minus" type="button">−</button>
             <button class="hk-btn" id="hk-kids-plus" type="button">+</button>
           </div>
         </div>
       </div>
+
+      <div id="hk-datepicker" class="hk-datepicker" hidden></div>
 
       <div id="hk-error" class="hk-error" style="display:none"></div>
 
@@ -558,9 +634,7 @@
   <script>
     (function () {
       const qs = new URLSearchParams(location.search);
-      const LANG = (qs.get('lang') || navigator.language || 'de')
-        .toLowerCase()
-        .startsWith('en') ? 'en' : 'de';
+      const LANG = (qs.get("lang") || navigator.language || "de").toLowerCase().startsWith("en") ? "en" : "de";
 
       const TEXTS = {
         de: {
@@ -569,6 +643,7 @@
           dateSection: "Datumsbereich",
           from: "Von",
           to: "Bis",
+          endPlaceholder: "Optional",
           hint: "Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.",
           durationPrefix: "Ausgewählte Dauer:",
           day: "Tag",
@@ -578,9 +653,12 @@
           kids: "Kinder",
           kidsSub: "6–15 Jahre",
           cta: "Weiter",
-          errNoStart: "Bitte Startdatum wählen.",
+          clear: "Bis löschen",
+          close: "Schließen",
           errDuration: "Bitte Dauer zwischen 1 und 6 Tagen wählen.",
-          errMinTickets: "Bitte mindestens 1 Ticket auswählen."
+          errMinTickets: "Bitte mindestens 1 Ticket auswählen.",
+          months: ["Jänner", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+          weekdays: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
         },
         en: {
           title: "Ski tickets",
@@ -588,6 +666,7 @@
           dateSection: "Date range",
           from: "From",
           to: "To",
+          endPlaceholder: "Optional",
           hint: "You can book 1–6 days. Leave “To” empty to book 1 day.",
           durationPrefix: "Selected duration:",
           day: "day",
@@ -597,9 +676,12 @@
           kids: "Children",
           kidsSub: "6–15 years",
           cta: "Continue",
-          errNoStart: "Please select a start date.",
+          clear: "Clear end date",
+          close: "Close",
           errDuration: "Please choose a duration between 1 and 6 days.",
-          errMinTickets: "Please select at least 1 ticket."
+          errMinTickets: "Please select at least 1 ticket.",
+          months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+          weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         }
       };
 
@@ -607,56 +689,42 @@
       const MAX_TICKETS = 99;
 
       const $ = (id) => document.getElementById(id);
+      const t = TEXTS[LANG];
 
-      const elStart = $("hk-start");
-      const elEnd = $("hk-end");
-      const dur = $("hk-duration");
-      const err = $("hk-error");
+      const state = {
+        start: todayISO(),
+        end: "",
+        adults: 1,
+        kids: 0,
+        pickerMode: null,
+        pickerMonth: null
+      };
 
-      const adultsCount = $("hk-adults-count");
-      const kidsCount = $("hk-kids-count");
+      const els = {
+        widget: $("hk-widget"),
+        startBtn: $("hk-start-btn"),
+        endBtn: $("hk-end-btn"),
+        startText: $("hk-start-text"),
+        endText: $("hk-end-text"),
+        duration: $("hk-duration"),
+        error: $("hk-error"),
+        datepicker: $("hk-datepicker"),
+        adultsCount: $("hk-adults-count"),
+        kidsCount: $("hk-kids-count"),
+        adultsMinus: $("hk-adults-minus"),
+        adultsPlus: $("hk-adults-plus"),
+        kidsMinus: $("hk-kids-minus"),
+        kidsPlus: $("hk-kids-plus"),
+        submit: $("hk-submit")
+      };
 
-      const adultsMinusBtn = $("hk-adults-minus");
-      const adultsPlusBtn = $("hk-adults-plus");
-      const kidsMinusBtn = $("hk-kids-minus");
-      const kidsPlusBtn = $("hk-kids-plus");
-
-      let adults = 1;
-      let kids = 0;
-
-      function hideError() {
-        err.style.display = "none";
-        err.textContent = "";
+      function todayISO() {
+        return toISODateLocal(new Date());
       }
 
-      function totalTickets() {
-        return adults + kids;
-      }
-
-      function applyTranslations() {
-        const t = TEXTS[LANG];
-
-        document.documentElement.lang = LANG;
-        document.querySelector(".hk-title").textContent = t.title;
-        document.querySelector(".hk-subtitle").textContent = t.subtitle;
-        document.querySelector("#hk-date-section .hk-section-title").textContent = t.dateSection;
-        document.querySelector('label[for="hk-start"]').textContent = t.from;
-        document.querySelector('label[for="hk-end"]').textContent = t.to;
-        document.querySelector(".hk-hint").textContent = t.hint;
-
-        const rows = document.querySelectorAll(".hk-counter-row");
-        rows[0].querySelector(".hk-label").textContent = t.adults;
-        rows[0].querySelector(".hk-sublabel").textContent = t.adultsSub;
-        rows[1].querySelector(".hk-label").textContent = t.kids;
-        rows[1].querySelector(".hk-sublabel").textContent = t.kidsSub;
-
-        $("hk-submit").textContent = t.cta;
-        dur.textContent = t.durationPrefix + " –";
-      }
-
-      function parseLocalISODate(iso) {
-        const [y, m, d] = iso.split("-").map(Number);
-        return new Date(y, m - 1, d, 12, 0, 0, 0);
+      function parseISODate(iso) {
+        const parts = iso.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0, 0);
       }
 
       function toISODateLocal(date) {
@@ -667,295 +735,370 @@
       }
 
       function addDaysISO(iso, n) {
-        const dt = parseLocalISODate(iso);
-        dt.setDate(dt.getDate() + n);
-        return toISODateLocal(dt);
+        const d = parseISODate(iso);
+        d.setDate(d.getDate() + n);
+        return toISODateLocal(d);
       }
 
       function diffDays(startISO, endISO) {
-        const start = parseLocalISODate(startISO);
-        const end = parseLocalISODate(endISO);
-        return Math.round((end - start) / 86400000) + 1;
+        return Math.round((parseISODate(endISO) - parseISODate(startISO)) / 86400000) + 1;
+      }
+
+      function formatDate(iso) {
+        const d = parseISODate(iso);
+        return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
       }
 
       function toLocalISOString(date) {
         const pad = (num, len = 2) => String(num).padStart(len, "0");
-
-        const year = date.getFullYear();
-        const month = pad(date.getMonth() + 1);
-        const day = pad(date.getDate());
-        const hours = pad(date.getHours());
-        const minutes = pad(date.getMinutes());
-        const seconds = pad(date.getSeconds());
-        const ms = pad(date.getMilliseconds(), 3);
-
         const offsetMin = -date.getTimezoneOffset();
         const sign = offsetMin >= 0 ? "+" : "-";
         const abs = Math.abs(offsetMin);
-        const offsetHours = pad(Math.floor(abs / 60));
-        const offsetMinutes = pad(abs % 60);
 
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${ms}${sign}${offsetHours}:${offsetMinutes}`;
+        return (
+          date.getFullYear() + "-" +
+          pad(date.getMonth() + 1) + "-" +
+          pad(date.getDate()) + "T" +
+          pad(date.getHours()) + ":" +
+          pad(date.getMinutes()) + ":" +
+          pad(date.getSeconds()) + "." +
+          pad(date.getMilliseconds(), 3) +
+          sign +
+          pad(Math.floor(abs / 60)) + ":" +
+          pad(abs % 60)
+        );
       }
 
-      function updateCounterButtons() {
-        const total = totalTickets();
-
-        adultsMinusBtn.disabled = adults <= 0 || (total <= 1 && adults > 0);
-        kidsMinusBtn.disabled = kids <= 0 || (total <= 1 && kids > 0);
-
-        adultsPlusBtn.disabled = total >= MAX_TICKETS;
-        kidsPlusBtn.disabled = total >= MAX_TICKETS;
+      function totalTickets() {
+        return state.adults + state.kids;
       }
 
-      function setCount(type, value) {
-        value = Math.max(0, Math.min(MAX_TICKETS, value | 0));
+      function hideError() {
+        els.error.style.display = "none";
+        els.error.textContent = "";
+      }
+
+      function showError(message) {
+        els.error.textContent = message;
+        els.error.style.display = "block";
+        postHeight("error");
+      }
+
+      function applyTranslations() {
+        document.documentElement.lang = LANG;
+        document.querySelector(".hk-title").textContent = t.title;
+        document.querySelector(".hk-subtitle").textContent = t.subtitle;
+        document.querySelector("#hk-date-section .hk-section-title").textContent = t.dateSection;
+        $("hk-start-label").textContent = t.from;
+        $("hk-end-label").textContent = t.to;
+        document.querySelector(".hk-hint").textContent = t.hint;
+        $("hk-adults-label").textContent = t.adults;
+        $("hk-adults-sub").textContent = t.adultsSub;
+        $("hk-kids-label").textContent = t.kids;
+        $("hk-kids-sub").textContent = t.kidsSub;
+        els.submit.textContent = t.cta;
+      }
+
+      function validateDates() {
+        if (!state.start) state.start = todayISO();
+
+        if (state.end) {
+          if (state.end < state.start) {
+            state.end = "";
+          } else if (diffDays(state.start, state.end) > MAX_DAYS) {
+            state.end = addDaysISO(state.start, MAX_DAYS - 1);
+          }
+        }
+      }
+
+      function render() {
+        validateDates();
+
+        els.startText.textContent = formatDate(state.start);
+
+        if (state.end) {
+          els.endText.textContent = formatDate(state.end);
+          els.endBtn.classList.remove("is-placeholder");
+        } else {
+          els.endText.textContent = t.endPlaceholder;
+          els.endBtn.classList.add("is-placeholder");
+        }
+
+        const duration = diffDays(state.start, state.end || state.start);
+        els.duration.textContent = `${t.durationPrefix} ${duration} ${duration === 1 ? t.day : t.days}`;
+
+        els.adultsCount.textContent = String(state.adults);
+        els.kidsCount.textContent = String(state.kids);
+
+        els.adultsMinus.disabled = state.adults <= 0 || (totalTickets() <= 1 && state.adults > 0);
+        els.kidsMinus.disabled = state.kids <= 0 || (totalTickets() <= 1 && state.kids > 0);
+        els.adultsPlus.disabled = totalTickets() >= MAX_TICKETS;
+        els.kidsPlus.disabled = totalTickets() >= MAX_TICKETS;
+
+        renderPicker();
+        postHeight("render");
+      }
+
+      function openPicker(mode) {
+        hideError();
+        state.pickerMode = mode;
+        state.pickerMonth = firstOfMonth(mode === "end" && state.end ? state.end : state.start);
+        render();
+      }
+
+      function closePicker() {
+        state.pickerMode = null;
+        render();
+      }
+
+      function firstOfMonth(iso) {
+        const d = parseISODate(iso);
+        return toISODateLocal(new Date(d.getFullYear(), d.getMonth(), 1, 12));
+      }
+
+      function changePickerMonth(delta) {
+        const d = parseISODate(state.pickerMonth);
+        d.setMonth(d.getMonth() + delta);
+        state.pickerMonth = toISODateLocal(new Date(d.getFullYear(), d.getMonth(), 1, 12));
+        renderPicker();
+        postHeight("month");
+      }
+
+      function renderPicker() {
+        if (!state.pickerMode) {
+          els.datepicker.hidden = true;
+          els.datepicker.innerHTML = "";
+          return;
+        }
+
+        els.datepicker.hidden = false;
+
+        const monthDate = parseISODate(state.pickerMonth);
+        const year = monthDate.getFullYear();
+        const month = monthDate.getMonth();
+        const firstDay = new Date(year, month, 1, 12);
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const startOffset = (firstDay.getDay() + 6) % 7;
+
+        const selectedISO = state.pickerMode === "start" ? state.start : state.end;
+        const minISO = state.pickerMode === "end" ? state.start : null;
+        const maxISO = state.pickerMode === "end" ? addDaysISO(state.start, MAX_DAYS - 1) : null;
+        const today = todayISO();
+
+        let html = `
+          <div class="hk-cal-head">
+            <button class="hk-cal-nav" type="button" data-cal-prev aria-label="Previous month">‹</button>
+            <div class="hk-cal-title">${t.months[month]} ${year}</div>
+            <button class="hk-cal-nav" type="button" data-cal-next aria-label="Next month">›</button>
+          </div>
+          <div class="hk-cal-grid">
+        `;
+
+        t.weekdays.forEach((day) => {
+          html += `<div class="hk-cal-weekday">${day}</div>`;
+        });
+
+        for (let i = 0; i < startOffset; i++) {
+          html += `<div class="hk-cal-empty"></div>`;
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const iso = toISODateLocal(new Date(year, month, day, 12));
+          const disabled = state.pickerMode === "end" && (iso < minISO || iso > maxISO);
+          const selected = iso === selectedISO;
+          const isToday = iso === today;
+
+          html += `
+            <button
+              class="hk-cal-day${selected ? " is-selected" : ""}${isToday ? " is-today" : ""}"
+              type="button"
+              data-date="${iso}"
+              ${disabled ? "disabled" : ""}
+            >${day}</button>
+          `;
+        }
+
+        html += `
+          </div>
+          <div class="hk-cal-actions">
+            ${state.pickerMode === "end" ? `<button class="hk-cal-action" type="button" data-cal-clear>${t.clear}</button>` : `<span></span>`}
+            <button class="hk-cal-action primary" type="button" data-cal-close>${t.close}</button>
+          </div>
+        `;
+
+        els.datepicker.innerHTML = html;
+      }
+
+      function setCount(type, delta) {
+        hideError();
 
         if (type === "adults") {
-          adults = value;
-          adultsCount.textContent = String(value);
-        } else {
-          kids = value;
-          kidsCount.textContent = String(value);
+          const next = Math.max(0, Math.min(MAX_TICKETS, state.adults + delta));
+          if (delta < 0 && totalTickets() <= 1 && state.adults > 0) return;
+          state.adults = next;
         }
 
-        updateCounterButtons();
-        hideError();
-      }
-
-      function bindPress(id, handler) {
-        const el = $(id);
-        let touchedAt = 0;
-
-        el.addEventListener("touchend", function (e) {
-          touchedAt = Date.now();
-          e.preventDefault();
-          handler();
-        }, { passive: false });
-
-        el.addEventListener("click", function (e) {
-          if (Date.now() - touchedAt < 700) {
-            e.preventDefault();
-            return;
-          }
-          handler();
-        });
-      }
-
-      bindPress("hk-adults-minus", () => {
-        if (adults <= 0) return;
-        if (totalTickets() <= 1) return;
-        setCount("adults", adults - 1);
-      });
-
-      bindPress("hk-adults-plus", () => {
-        if (totalTickets() >= MAX_TICKETS) return;
-        setCount("adults", adults + 1);
-      });
-
-      bindPress("hk-kids-minus", () => {
-        if (kids <= 0) return;
-        if (totalTickets() <= 1) return;
-        setCount("kids", kids - 1);
-      });
-
-      bindPress("hk-kids-plus", () => {
-        if (totalTickets() >= MAX_TICKETS) return;
-        setCount("kids", kids + 1);
-      });
-
-      function updateDuration() {
-        const t = TEXTS[LANG];
-        const s = elStart.value;
-        const e = elEnd.value || s;
-
-        if (!s) {
-          dur.textContent = t.durationPrefix + " –";
-          return;
+        if (type === "kids") {
+          const next = Math.max(0, Math.min(MAX_TICKETS, state.kids + delta));
+          if (delta < 0 && totalTickets() <= 1 && state.kids > 0) return;
+          state.kids = next;
         }
 
-        const d = diffDays(s, e);
-        dur.textContent = `${t.durationPrefix} ${d} ${d === 1 ? t.day : t.days}`;
+        render();
       }
-
-      function syncConstraints() {
-        const s = elStart.value;
-        hideError();
-
-        if (!s) {
-          elEnd.value = "";
-          elEnd.min = "";
-          elEnd.max = "";
-          elEnd.disabled = true;
-          updateDuration();
-          return;
-        }
-
-        elEnd.disabled = false;
-        elEnd.min = s;
-        elEnd.max = addDaysISO(s, MAX_DAYS - 1);
-
-        if (elEnd.value) {
-          const selectedDuration = diffDays(s, elEnd.value);
-          if (elEnd.value < s || selectedDuration < 1 || selectedDuration > MAX_DAYS) {
-            elEnd.value = "";
-          }
-        }
-
-        updateDuration();
-      }
-
-      ["input", "change", "blur"].forEach((evt) => {
-        elStart.addEventListener(evt, syncConstraints);
-        elEnd.addEventListener(evt, function () {
-          hideError();
-
-          if (elStart.value && elEnd.value) {
-            const d = diffDays(elStart.value, elEnd.value);
-            if (d < 1 || d > MAX_DAYS) {
-              elEnd.value = "";
-            }
-          }
-
-          updateDuration();
-        });
-      });
 
       function buildShopUrl(formState) {
-        const base = (LANG === "en")
+        const base = LANG === "en"
           ? "https://shop.hochkar.com/en/products/skitickets"
           : "https://shop.hochkar.com/products/skitickets";
 
         const url = new URL(base);
 
-        const UTM_DEFAULT = {
+        const utms = {
           utm_source: "referral",
           utm_medium: "widget",
           utm_campaign: "hok",
           utm_content: "undefined"
         };
 
-        const utms = { ...UTM_DEFAULT };
-
-        ["utm_source", "utm_medium", "utm_campaign", "utm_content"].forEach((k) => {
-          if (qs.get(k)) utms[k] = qs.get(k);
+        ["utm_source", "utm_medium", "utm_campaign", "utm_content"].forEach((key) => {
+          if (qs.get(key)) utms[key] = qs.get(key);
         });
 
-        Object.entries(utms).forEach(([k, v]) => url.searchParams.set(k, v));
+        Object.entries(utms).forEach(([key, value]) => url.searchParams.set(key, value));
         url.searchParams.set("formState", JSON.stringify(formState));
 
         return url.toString();
       }
 
-      $("hk-submit").addEventListener("click", function () {
-        const t = TEXTS[LANG];
+      function submit() {
         hideError();
 
-        const s = elStart.value;
-        if (!s) {
-          err.textContent = t.errNoStart;
-          err.style.display = "block";
-          return;
-        }
-
         if (totalTickets() < 1) {
-          err.textContent = t.errMinTickets;
-          err.style.display = "block";
+          showError(t.errMinTickets);
           return;
         }
 
-        const e = elEnd.value || s;
-        const d = diffDays(s, e);
+        const endISO = state.end || state.start;
+        const duration = diffDays(state.start, endISO);
 
-        if (d < 1 || d > MAX_DAYS) {
-          err.textContent = t.errDuration;
-          err.style.display = "block";
+        if (duration < 1 || duration > MAX_DAYS) {
+          showError(t.errDuration);
           return;
         }
 
-        const startBase = parseLocalISODate(s);
-        const endBase = parseLocalISODate(e);
+        const startBase = parseISODate(state.start);
+        const endBase = parseISODate(endISO);
 
-        const startDate = new Date(
-          startBase.getFullYear(),
-          startBase.getMonth(),
-          startBase.getDate(),
-          0, 0, 0, 0
-        );
+        const fromDate = new Date(startBase.getFullYear(), startBase.getMonth(), startBase.getDate(), 0, 0, 0, 0);
+        const toDate = new Date(endBase.getFullYear(), endBase.getMonth(), endBase.getDate(), 23, 59, 59, 999);
 
-        const endDate = new Date(
-          endBase.getFullYear(),
-          endBase.getMonth(),
-          endBase.getDate(),
-          23, 59, 59, 999
-        );
+        const values = [];
 
-        const from = toLocalISOString(startDate);
-        const to = toLocalISOString(endDate);
-
-        const allocation = [];
-        if (adults > 0) {
-          allocation.push({
-            kind: "anonymous",
-            quantity: adults,
-            personType: "adult"
-          });
+        if (state.adults > 0) {
+          values.push({ kind: "anonymous", quantity: state.adults, personType: "adult" });
         }
-        if (kids > 0) {
-          allocation.push({
-            kind: "anonymous",
-            quantity: kids,
-            personType: "child"
-          });
+
+        if (state.kids > 0) {
+          values.push({ kind: "anonymous", quantity: state.kids, personType: "child" });
         }
 
         const formState = {
-          validity: { from, to },
-          allocation: { kind: "persontype", values: allocation },
-          attributes: { duration: `${d}d` }
+          validity: {
+            from: toLocalISOString(fromDate),
+            to: toLocalISOString(toDate)
+          },
+          allocation: {
+            kind: "persontype",
+            values
+          },
+          attributes: {
+            duration: `${duration}d`
+          }
         };
 
         window.open(buildShopUrl(formState), "_blank", "noopener");
-      });
+      }
+
+      function bindEvents() {
+        els.startBtn.addEventListener("click", () => openPicker("start"));
+        els.endBtn.addEventListener("click", () => openPicker("end"));
+
+        els.adultsMinus.addEventListener("click", () => setCount("adults", -1));
+        els.adultsPlus.addEventListener("click", () => setCount("adults", 1));
+        els.kidsMinus.addEventListener("click", () => setCount("kids", -1));
+        els.kidsPlus.addEventListener("click", () => setCount("kids", 1));
+
+        els.submit.addEventListener("click", submit);
+
+        els.datepicker.addEventListener("click", (event) => {
+          const target = event.target.closest("button");
+          if (!target) return;
+
+          if (target.hasAttribute("data-cal-prev")) {
+            changePickerMonth(-1);
+            return;
+          }
+
+          if (target.hasAttribute("data-cal-next")) {
+            changePickerMonth(1);
+            return;
+          }
+
+          if (target.hasAttribute("data-cal-close")) {
+            closePicker();
+            return;
+          }
+
+          if (target.hasAttribute("data-cal-clear")) {
+            state.end = "";
+            closePicker();
+            return;
+          }
+
+          const date = target.getAttribute("data-date");
+          if (!date) return;
+
+          if (state.pickerMode === "start") {
+            state.start = date;
+
+            if (state.end && (state.end < state.start || diffDays(state.start, state.end) > MAX_DAYS)) {
+              state.end = "";
+            }
+          }
+
+          if (state.pickerMode === "end") {
+            state.end = date;
+          }
+
+          closePicker();
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && state.pickerMode) closePicker();
+        });
+      }
+
+      function postHeight(reason) {
+        window.clearTimeout(postHeight._t);
+        postHeight._t = window.setTimeout(() => {
+          const height = Math.ceil(els.widget.getBoundingClientRect().height) + 24;
+          parent.postMessage({ type: "HKWIDGET_HEIGHT", height, reason }, "*");
+        }, 30);
+      }
 
       applyTranslations();
-      setCount("adults", 1);
-      setCount("kids", 0);
-      updateDuration();
-    })();
+      bindEvents();
+      render();
 
-    (function () {
-      const ROOT = document.getElementById("hk-widget");
-      const BODY_PADDING = 24;
+      window.addEventListener("load", () => postHeight("load"));
+      window.addEventListener("resize", () => postHeight("resize"));
 
-      function calcHeight() {
-        return Math.ceil(ROOT.getBoundingClientRect().height) + BODY_PADDING;
-      }
+      const mo = new MutationObserver(() => postHeight("mutation"));
+      mo.observe(els.widget, { subtree: true, childList: true, attributes: true });
 
-      function post(reason) {
-        parent.postMessage({
-          type: "HKWIDGET_HEIGHT",
-          height: calcHeight(),
-          reason
-        }, "*');
-      }
-
-      window.addEventListener("load", () => post("load"));
-      window.addEventListener("resize", () => post("resize"));
-
-      const mo = new MutationObserver(() => {
-        clearTimeout(post._t);
-        post._t = setTimeout(() => post("mut"), 50);
-      });
-
-      mo.observe(ROOT, {
-        subtree: true,
-        childList: true,
-        attributes: true
-      });
-
-      setTimeout(() => post("delay300"), 300);
-      setTimeout(() => post("delay1200"), 1200);
+      setTimeout(() => postHeight("delay300"), 300);
+      setTimeout(() => postHeight("delay1200"), 1200);
     })();
   </script>
 </body>
