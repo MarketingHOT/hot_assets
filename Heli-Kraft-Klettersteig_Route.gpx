@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1" creator="GPX Route Export" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>Klettersteig Route</name>
+    <time>2026-05-04T13:33:41Z</time>
+  </metadata>
+  <trk>
+    <name>Klettersteig Route</name>
+    <type>Klettersteig</type>
+    <trkseg>
+      <trkpt lat="47.713118" lon="14.910216">
+        <ele>1644.59252</ele>
+        <name>Heli Kraft Klettersteig, Göstling an der Ybbs</name>
+      </trkpt>
+      <trkpt lat="47.713032" lon="14.910888">
+        <ele>1690.51065</ele>
+      </trkpt>
+      <trkpt lat="47.713523" lon="14.911188">
+        <ele>1674.34877</ele>
+      </trkpt>
+      <trkpt lat="47.713985" lon="14.911854">
+        <ele>1675.94064</ele>
+      </trkpt>
+      <trkpt lat="47.714187" lon="14.912326">
+        <ele>1682.71612</ele>
+      </trkpt>
+      <trkpt lat="47.714584" lon="14.913023">
+        <ele>1695.24049</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

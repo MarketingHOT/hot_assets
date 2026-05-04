@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1" creator="GPX Route Export" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>Zustieg zur Klettersteig Route</name>
+    <time>2026-05-04T13:33:41Z</time>
+  </metadata>
+  <trk>
+    <name>Zustieg</name>
+    <type>Zustieg</type>
+    <trkseg>
+      <trkpt lat="47.717544" lon="14.916867">
+        <ele>1550</ele>
+      </trkpt>
+      <trkpt lat="47.716786" lon="14.915196">
+        <ele>1558</ele>
+      </trkpt>
+      <trkpt lat="47.71682" lon="14.915047">
+        <ele>1558</ele>
+      </trkpt>
+      <trkpt lat="47.717005" lon="14.915015">
+        <ele>1561</ele>
+      </trkpt>
+      <trkpt lat="47.717019" lon="14.914936">
+        <ele>1561</ele>
+      </trkpt>
+      <trkpt lat="47.716807" lon="14.914837">
+        <ele>1562</ele>
+      </trkpt>
+      <trkpt lat="47.716843" lon="14.914667">
+        <ele>1564</ele>
+      </trkpt>
+      <trkpt lat="47.716892" lon="14.914704">
+        <ele>1565</ele>
+      </trkpt>
+      <trkpt lat="47.716798" lon="14.914656">
+        <ele>1566</ele>
+      </trkpt>
+      <trkpt lat="47.716928" lon="14.91458">
+        <ele>1567</ele>
+      </trkpt>
+      <trkpt lat="47.716809" lon="14.914038">
+        <ele>1567</ele>
+      </trkpt>
+      <trkpt lat="47.716828" lon="14.913327">
+        <ele>1569</ele>
+      </trkpt>
+      <trkpt lat="47.716712" lon="14.913192">
+        <ele>1570</ele>
+      </trkpt>
+      <trkpt lat="47.716776" lon="14.913095">
+        <ele>1570</ele>
+      </trkpt>
+      <trkpt lat="47.71673" lon="14.913121">
+        <ele>1571</ele>
+      </trkpt>
+      <trkpt lat="47.716831" lon="14.913132">
+        <ele>1572</ele>
+      </trkpt>
+      <trkpt lat="47.716881" lon="14.912866">
+        <ele>1573</ele>
+      </trkpt>
+      <trkpt lat="47.716713" lon="14.912478">
+        <ele>1577</ele>
+      </trkpt>
+      <trkpt lat="47.716731" lon="14.912187">
+        <ele>1580</ele>
+      </trkpt>
+      <trkpt lat="47.716659" lon="14.912202">
+        <ele>1585</ele>
+      </trkpt>
+      <trkpt lat="47.716582" lon="14.912092">
+        <ele>1587</ele>
+      </trkpt>
+      <trkpt lat="47.716441" lon="14.912039">
+        <ele>1590</ele>
+      </trkpt>
+      <trkpt lat="47.716275" lon="14.911732">
+        <ele>1592</ele>
+      </trkpt>
+      <trkpt lat="47.716045" lon="14.911575">
+        <ele>1594</ele>
+      </trkpt>
+      <trkpt lat="47.715874" lon="14.911295">
+        <ele>1593</ele>
+      </trkpt>
+      <trkpt lat="47.715876" lon="14.911362">
+        <ele>1592</ele>
+      </trkpt>
+      <trkpt lat="47.715532" lon="14.910522">
+        <ele>1588</ele>
+      </trkpt>
+      <trkpt lat="47.715491" lon="14.909935">
+        <ele>1587</ele>
+      </trkpt>
+      <trkpt lat="47.715388" lon="14.909587">
+        <ele>1586</ele>
+      </trkpt>
+      <trkpt lat="47.715332" lon="14.909689">
+        <ele>1587</ele>
+      </trkpt>
+      <trkpt lat="47.715191" lon="14.909752">
+        <ele>1587</ele>
+      </trkpt>
+      <trkpt lat="47.71502" lon="14.909635">
+        <ele>1589</ele>
+      </trkpt>
+      <trkpt lat="47.714815" lon="14.909911">
+        <ele>1593</ele>
+      </trkpt>
+      <trkpt lat="47.714689" lon="14.909912">
+        <ele>1595</ele>
+      </trkpt>
+      <trkpt lat="47.71446" lon="14.910087">
+        <ele>1596</ele>
+      </trkpt>
+      <trkpt lat="47.714352" lon="14.910089">
+        <ele>1598</ele>
+      </trkpt>
+      <trkpt lat="47.714289" lon="14.909973">
+        <ele>1600</ele>
+      </trkpt>
+      <trkpt lat="47.714099" lon="14.909936">
+        <ele>1605</ele>
+      </trkpt>
+      <trkpt lat="47.714077" lon="14.909995">
+        <ele>1606</ele>
+      </trkpt>
+      <trkpt lat="47.713958" lon="14.909902">
+        <ele>1610</ele>
+      </trkpt>
+      <trkpt lat="47.713837" lon="14.910216">
+        <ele>1617</ele>
+      </trkpt>
+      <trkpt lat="47.713859" lon="14.910133">
+        <ele>1618</ele>
+      </trkpt>
+      <trkpt lat="47.713813" lon="14.910119">
+        <ele>1619</ele>
+      </trkpt>
+      <trkpt lat="47.713776" lon="14.910299">
+        <ele>1622</ele>
+      </trkpt>
+      <trkpt lat="47.713704" lon="14.910361">
+        <ele>1624</ele>
+      </trkpt>
+      <trkpt lat="47.713727" lon="14.910286">
+        <ele>1625</ele>
+      </trkpt>
+      <trkpt lat="47.71367" lon="14.910398">
+        <ele>1628</ele>
+      </trkpt>
+      <trkpt lat="47.713484" lon="14.910403">
+        <ele>1633</ele>
+      </trkpt>
+      <trkpt lat="47.713482" lon="14.91047">
+        <ele>1636</ele>
+      </trkpt>
+      <trkpt lat="47.713404" lon="14.910375">
+        <ele>1639</ele>
+      </trkpt>
+      <trkpt lat="47.713293" lon="14.910564">
+        <ele>1633</ele>
+      </trkpt>
+      <trkpt lat="47.713304" lon="14.910707">
+        <ele>1640</ele>
+      </trkpt>
+      <trkpt lat="47.713255" lon="14.910152">
+        <ele>1648</ele>
+      </trkpt>
+      <trkpt lat="47.713203" lon="14.910154">
+        <ele>1651</ele>
+      </trkpt>
+      <trkpt lat="47.713186" lon="14.91025">
+        <ele>1654</ele>
+      </trkpt>
+      <trkpt lat="47.713118" lon="14.910216">
+        <ele>1644.59252</ele>
+        <name>Start Klettersteig Route</name>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
