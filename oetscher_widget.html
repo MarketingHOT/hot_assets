@@ -2,282 +2,1122 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Ötscher Buchungs-Widget</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    body{
-      margin:0; background:#f4f6f9; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      display:flex; align-items:flex-start; justify-content:center; padding:24px;
+    :root {
+      --oe-bg: #ffffff;
+      --oe-surface: #f8fafc;
+      --oe-border: #dbe3ee;
+      --oe-border-strong: #c4cfdd;
+      --oe-text: #0f172a;
+      --oe-text-soft: #64748b;
+      --oe-primary: #154696;
+      --oe-primary-hover: #103874;
+      --oe-primary-soft: rgba(21, 70, 150, 0.08);
+      --oe-danger: #b00020;
+      --oe-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
     }
-    #oe-widget{ max-width:720px; width:100%; background:#fff; border:1px solid #e6e6e9; border-radius:14px; padding:16px; box-shadow:0 6px 18px rgba(0,0,0,.08); }
-    .oe-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
-    .oe-title{ margin:0; font-size:22px; font-weight:800; line-height:1.2; }
-    .oe-subtitle{ color:#6b7280; font-size:14px; }
-    .oe-logo{ height:40px; width:auto; object-fit:contain; }
-    .oe-body{ display:flex; gap:16px; flex-wrap:wrap; min-width:0; }
-    .oe-section{ flex:1 1 300px; border:1px solid #ececf1; border-radius:12px; padding:14px; min-width:0; }
-    .oe-section-title{ font-weight:600; margin-bottom:10px; }
-    .oe-daterow{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; align-items:end; width:100%; }
-    .oe-datefield label{ display:block; font-size:12px; color:#6b7280; margin:0 0 4px 0; line-height:1.2; }
-    input[type="date"]{ width:100%; padding:10px; border:1px solid #d1d5db; border-radius:12px; background:#fff; color:#111827; font-size:14px; }
-    .oe-hint{ margin-top:8px; color:#6b7280; font-size:12px; }
-    .oe-duration{ margin-top:8px; font-size:13px; color:#111827; font-weight:600; }
-    .oe-counters{ display:flex; flex-direction:column; gap:8px; }
-    .oe-counter-row{ display:grid; grid-template-columns:40px 1fr auto; gap:10px; align-items:center; border:1px solid #ececf1; border-radius:12px; padding:12px; }
-    .oe-count{ font-size:24px; font-weight:800; color:#111827; min-width:28px; text-align:center; }
-    .oe-label{ font-weight:700; }
-    .oe-sublabel{ color:#6b7280; font-size:12px; }
-    .oe-actions{ display:flex; gap:8px; }
-    .oe-btn{ width:36px; height:36px; border-radius:10px; border:1px solid #d1d5db; background:#fff; font-size:18px; line-height:34px; text-align:center; cursor:pointer; }
-    .oe-btn:disabled{ opacity:.35; cursor:not-allowed; }
-    .oe-error{ margin-top:8px; color:#b00020; font-size:14px; }
-    .oe-footer{ margin-left:auto; margin-top:8px; }
-    .oe-cta{ padding:12px 18px; border-radius:12px; border:0; background:#154696; color:#fff; font-weight:700; cursor:pointer; min-width:140px; }
-    .oe-cta:hover{ background:#103874; }
-    @media (max-width:510px){ .oe-daterow{ grid-template-columns:1fr; } .oe-logo{ height:32px; } }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      background: transparent !important;
+    }
+
+    body {
+      font-family: 'Cabin', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+      color: var(--oe-text);
+      -webkit-text-size-adjust: 100%;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    #oe-widget {
+      width: 100%;
+      max-width: 880px;
+      min-width: 0;
+      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+      border: 1px solid var(--oe-border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--oe-shadow);
+      overflow: hidden;
+    }
+
+    .oe-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(219, 227, 238, 0.8);
+      min-width: 0;
+    }
+
+    .oe-titles {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .oe-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .oe-subtitle {
+      margin-top: 4px;
+      color: var(--oe-text-soft);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .oe-logo {
+      height: 42px;
+      width: auto;
+      max-width: 130px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .oe-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    .oe-section {
+      min-width: 0;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--oe-border);
+      border-radius: 16px;
+      padding: 16px;
+      overflow: visible;
+    }
+
+    .oe-section-title {
+      margin-bottom: 12px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .oe-daterow {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .oe-datefield {
+      min-width: 0;
+      width: 100%;
+      position: relative;
+    }
+
+    .oe-datefield label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--oe-text-soft);
+    }
+
+    .oe-datebutton {
+      width: 100%;
+      min-width: 0;
+      min-height: 48px;
+      padding: 11px 42px 11px 14px;
+      border: 1px solid var(--oe-border-strong);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--oe-text);
+      font-size: 15px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .oe-datebutton:hover {
+      border-color: #9db1ce;
+    }
+
+    .oe-datebutton:focus-visible,
+    .oe-datebutton.is-active {
+      outline: none;
+      border-color: var(--oe-primary);
+      box-shadow: 0 0 0 4px rgba(21, 70, 150, 0.12);
+    }
+
+    .oe-datebutton.is-placeholder {
+      color: var(--oe-text-soft);
+      font-weight: 600;
+    }
+
+    .oe-dateicon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      transform: translateY(-50%);
+      color: var(--oe-text-soft);
+      pointer-events: none;
+    }
+
+    .oe-dateicon svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .oe-hint {
+      margin-top: 10px;
+      color: var(--oe-text-soft);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .oe-duration {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--oe-primary);
+      background: var(--oe-primary-soft);
+      border: 1px solid rgba(21, 70, 150, 0.14);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .oe-counters {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .oe-counter-row {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 82px;
+      padding: 12px;
+      border: 1px solid var(--oe-border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+      min-width: 0;
+    }
+
+    .oe-count {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #eff4fb 0%, #e4edf9 100%);
+      border: 1px solid #d5e1f2;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 54px;
+      text-align: center;
+      color: var(--oe-primary);
+    }
+
+    .oe-labelgroup {
+      min-width: 0;
+    }
+
+    .oe-label {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .oe-sublabel {
+      margin-top: 3px;
+      color: var(--oe-text-soft);
+      font-size: 12px;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .oe-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .oe-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--oe-border-strong);
+      background: #fff;
+      color: var(--oe-text);
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .oe-btn:hover:not(:disabled) {
+      background: #f8fafc;
+      border-color: #9db1ce;
+    }
+
+    .oe-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .oe-error {
+      grid-column: 1 / -1;
+      color: var(--oe-danger);
+      font-size: 14px;
+      font-weight: 700;
+      background: rgba(176, 0, 32, 0.06);
+      border: 1px solid rgba(176, 0, 32, 0.14);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .oe-footer {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .oe-cta {
+      min-width: 160px;
+      padding: 14px 22px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(180deg, var(--oe-primary) 0%, #123d85 100%);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(21, 70, 150, 0.22);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .oe-cta:hover {
+      background: linear-gradient(180deg, #1a4fa9 0%, var(--oe-primary-hover) 100%);
+    }
+
+    .oe-datepicker {
+      width: 100%;
+      max-width: 100%;
+      margin-top: 12px;
+      border: 1px solid var(--oe-border);
+      border-radius: 16px;
+      background: #fff;
+      padding: 12px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
+    }
+
+    .oe-datepicker[hidden] {
+      display: none !important;
+    }
+
+    .oe-cal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .oe-cal-title {
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+      flex: 1;
+    }
+
+    .oe-cal-nav {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      border: 1px solid var(--oe-border-strong);
+      background: #fff;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .oe-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .oe-cal-weekday {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--oe-text-soft);
+      text-align: center;
+      padding: 4px 0;
+    }
+
+    .oe-cal-day {
+      min-width: 0;
+      height: 40px;
+      border-radius: 11px;
+      border: 1px solid transparent;
+      background: #f8fafc;
+      color: var(--oe-text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .oe-cal-day:hover:not(:disabled) {
+      border-color: #9db1ce;
+      background: #fff;
+    }
+
+    .oe-cal-day.is-selected {
+      background: var(--oe-primary);
+      color: #fff;
+      border-color: var(--oe-primary);
+    }
+
+    .oe-cal-day.is-today:not(.is-selected) {
+      border-color: var(--oe-primary);
+      color: var(--oe-primary);
+      background: var(--oe-primary-soft);
+    }
+
+    .oe-cal-day:disabled {
+      opacity: 0.28;
+      cursor: not-allowed;
+    }
+
+    .oe-cal-empty {
+      height: 40px;
+    }
+
+    .oe-cal-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .oe-cal-action {
+      border: 1px solid var(--oe-border-strong);
+      background: #fff;
+      border-radius: 11px;
+      padding: 10px 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .oe-cal-action.primary {
+      background: var(--oe-primary);
+      border-color: var(--oe-primary);
+      color: #fff;
+    }
+
+    @media (max-width: 900px) {
+      .oe-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      #oe-widget {
+        padding: 16px;
+        border-radius: 16px;
+      }
+
+      .oe-header {
+        align-items: flex-start;
+      }
+
+      .oe-title {
+        font-size: 22px;
+      }
+
+      .oe-logo {
+        height: 32px;
+        max-width: 110px;
+      }
+
+      .oe-daterow {
+        grid-template-columns: 1fr;
+      }
+
+      .oe-counter-row {
+        grid-template-columns: 50px minmax(0, 1fr) auto;
+        gap: 10px;
+      }
+
+      .oe-count {
+        width: 50px;
+        height: 50px;
+        line-height: 48px;
+        font-size: 22px;
+      }
+
+      .oe-btn {
+        width: 40px;
+        height: 40px;
+      }
+
+      .oe-footer {
+        justify-content: stretch;
+      }
+
+      .oe-cta {
+        width: 100%;
+      }
+
+      .oe-cal-day {
+        height: 38px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #oe-widget {
+        padding: 12px;
+      }
+
+      .oe-section {
+        padding: 12px;
+      }
+
+      .oe-counter-row {
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+      }
+
+      .oe-count {
+        width: 44px;
+        height: 44px;
+        line-height: 42px;
+        font-size: 20px;
+      }
+
+      .oe-actions {
+        gap: 6px;
+      }
+
+      .oe-btn {
+        width: 38px;
+        height: 38px;
+      }
+    }
   </style>
 </head>
-<body>
 
+<body>
   <div id="oe-widget">
     <div class="oe-header">
       <div class="oe-titles">
-        <h3 class="oe-title"></h3>
-        <div class="oe-subtitle"></div>
+        <h3 class="oe-title">Skitickets</h3>
+        <div class="oe-subtitle">Stunden-, Tages- & Mehrtagestickets</div>
       </div>
-      <img class="oe-logo" src="https://raw.githubusercontent.com/MarketingHOT/hot_assets/refs/heads/main/logo_rgb_oetscher.png" alt="">
+      <img class="oe-logo" src="https://raw.githubusercontent.com/MarketingHOT/hot_assets/refs/heads/main/logo_rgb_oetscher.png" alt="Ötscher Logo">
     </div>
 
     <div class="oe-body">
       <div class="oe-section" id="oe-date-section">
-        <div class="oe-section-title" id="i18n-date-section"></div>
+        <div class="oe-section-title">Datumsbereich</div>
 
         <div class="oe-daterow">
           <div class="oe-datefield">
-            <label for="oe-start" id="i18n-from"></label>
-            <input type="date" id="oe-start" required>
+            <label id="oe-start-label">Von</label>
+            <button class="oe-datebutton" id="oe-start-btn" type="button">
+              <span id="oe-start-text"></span>
+              <span class="oe-dateicon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                  <line x1="16" y1="3" x2="16" y2="7"></line>
+                  <line x1="8" y1="3" x2="8" y2="7"></line>
+                  <line x1="3" y1="11" x2="21" y2="11"></line>
+                </svg>
+              </span>
+            </button>
           </div>
+
           <div class="oe-datefield">
-            <label for="oe-end" id="i18n-to"></label>
-            <input type="date" id="oe-end" placeholder="optional" disabled>
+            <label id="oe-end-label">Bis</label>
+            <button class="oe-datebutton is-placeholder" id="oe-end-btn" type="button">
+              <span id="oe-end-text"></span>
+              <span class="oe-dateicon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                  <line x1="16" y1="3" x2="16" y2="7"></line>
+                  <line x1="8" y1="3" x2="8" y2="7"></line>
+                  <line x1="3" y1="11" x2="21" y2="11"></line>
+                </svg>
+              </span>
+            </button>
           </div>
         </div>
 
-        <div class="oe-hint" id="i18n-hint"></div>
-        <div class="oe-duration" id="oe-duration"></div>
+        <div id="oe-datepicker" class="oe-datepicker" hidden></div>
+
+        <div class="oe-hint">Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.</div>
+        <div class="oe-duration" id="oe-duration">Ausgewählte Dauer: –</div>
       </div>
 
       <div class="oe-section oe-counters">
         <div class="oe-counter-row">
           <div class="oe-count" id="oe-adults-count">1</div>
-          <div class="oe-labels">
-            <div class="oe-label" id="i18n-adult"></div>
-            <div class="oe-sublabel" id="i18n-adult-age"></div>
+          <div class="oe-labelgroup">
+            <div class="oe-label" id="oe-adults-label">Erwachsene</div>
+            <div class="oe-sublabel" id="oe-adults-sub">ab 16 Jahren</div>
           </div>
           <div class="oe-actions">
-            <button class="oe-btn oe-minus" id="oe-adults-minus" type="button">–</button>
-            <button class="oe-btn oe-plus"  id="oe-adults-plus"  type="button">+</button>
+            <button class="oe-btn" id="oe-adults-minus" type="button">−</button>
+            <button class="oe-btn" id="oe-adults-plus" type="button">+</button>
           </div>
         </div>
 
         <div class="oe-counter-row">
           <div class="oe-count" id="oe-kids-count">0</div>
-          <div class="oe-labels">
-            <div class="oe-label" id="i18n-child"></div>
-            <div class="oe-sublabel" id="i18n-child-age"></div>
+          <div class="oe-labelgroup">
+            <div class="oe-label" id="oe-kids-label">Kinder</div>
+            <div class="oe-sublabel" id="oe-kids-sub">6–15 Jahre</div>
           </div>
           <div class="oe-actions">
-            <button class="oe-btn oe-minus" id="oe-kids-minus" type="button" disabled>–</button>
-            <button class="oe-btn oe-plus"  id="oe-kids-plus"  type="button">+</button>
+            <button class="oe-btn" id="oe-kids-minus" type="button">−</button>
+            <button class="oe-btn" id="oe-kids-plus" type="button">+</button>
           </div>
         </div>
       </div>
 
       <div id="oe-error" class="oe-error" style="display:none"></div>
-      <div class="oe-footer"><button id="oe-submit" class="oe-cta" type="button"></button></div>
+
+      <div class="oe-footer">
+        <button id="oe-submit" class="oe-cta" type="button">Weiter</button>
+      </div>
     </div>
   </div>
 
   <script>
-    /* ---------- i18n (DE/EN via ?lang=, Fallback Browser) ---------- */
-    const I18N = {
-      de: {
-        title:"Skitickets", subtitle:"Stunden-, Tages- & Mehrtagestickets",
-        date_section:"Datumsbereich", from:"Von", to:"Bis",
-        hint:"Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.",
-        selected_duration:"Ausgewählte Dauer: {d} {day}",
-        day_one:"Tag", day_other:"Tage",
-        adult:"Erwachsen", adult_age:"Alter ab 16 Jahren",
-        child:"Kind", child_age:"Alter zwischen 6 und 15 Jahren",
-        error_start:"Bitte ein Startdatum wählen.",
-        error_duration:"Bitte eine Dauer zwischen 1 und 6 Tagen wählen.",
-        cta:"Weiter", logo_alt:"Ötscher Logo", date_unset:"Ausgewählte Dauer: –"
-      },
-      en: {
-        title:"Ski tickets", subtitle:"Hourly, Day & Multi-day tickets",
-        date_section:"Date range", from:"From", to:"To",
-        hint:"Bookable for 1–6 days. Leave “To” empty to book 1 day.",
-        selected_duration:"Selected duration: {d} {day}",
-        day_one:"day", day_other:"days",
-        adult:"Adult", adult_age:"Age 16 and over",
-        child:"Child", child_age:"Age 6 to 15",
-        error_start:"Please select a start date.",
-        error_duration:"Please choose a duration between 1 and 6 days.",
-        cta:"Continue", logo_alt:"Ötscher logo", date_unset:"Selected duration: –"
-      }
-    };
+    (function () {
+      const qs = new URLSearchParams(location.search);
+      const LANG = (qs.get("lang") || navigator.language || "de").toLowerCase().startsWith("en") ? "en" : "de";
 
-    function detectLang(){
-      const qp = new URLSearchParams(location.search).get('lang');
-      if (qp) return qp.split('-')[0].toLowerCase();
-      const nav = (navigator.language || 'de').toLowerCase();
-      return nav.startsWith('en') ? 'en' : 'de';
-    }
-    let LANG = detectLang();
-    document.documentElement.lang = LANG;
-
-    function t(k){ return (I18N[LANG] && I18N[LANG][k]) || I18N.de[k] || k; }
-    function plural(n,one,other){ return n===1 ? t(one) : t(other); }
-
-    function applyI18n(){
-      document.querySelector('.oe-title').textContent = t('title');
-      document.querySelector('.oe-subtitle').textContent = t('subtitle');
-      const logo = document.querySelector('.oe-logo'); if (logo) logo.alt = t('logo_alt');
-      document.getElementById('i18n-date-section').textContent = t('date_section');
-      document.getElementById('i18n-from').textContent = t('from');
-      document.getElementById('i18n-to').textContent = t('to');
-      document.getElementById('i18n-hint').textContent = t('hint');
-      document.getElementById('i18n-adult').textContent = t('adult');
-      document.getElementById('i18n-adult-age').textContent = t('adult_age');
-      document.getElementById('i18n-child').textContent = t('child');
-      document.getElementById('i18n-child-age').textContent = t('child_age');
-      document.getElementById('oe-submit').textContent = t('cta');
-      document.getElementById('oe-duration').textContent = t('date_unset');
-    }
-    document.addEventListener('DOMContentLoaded', applyI18n);
-  </script>
-
-  <script>
-  (function(){
-    const MAX_DAYS = 6;
-    const qs = new URLSearchParams(location.search);
-
-    const $ = id => document.getElementById(id);
-    const elStart = $("oe-start"), elEnd = $("oe-end"), err = $("oe-error"), dur = $("oe-duration");
-
-    let adults = 1, kids = 0;
-    function setCount(type, v){
-      v = Math.max(0, Math.min(99, v|0));
-      if (type === "adults"){ adults = v; $("oe-adults-count").textContent = v; }
-      else { kids = v; $("oe-kids-count").textContent = v; $("oe-kids-minus").disabled = v <= 0; }
-    }
-    $("oe-adults-minus").onclick = () => setCount("adults", adults - 1);
-    $("oe-adults-plus").onclick  = () => setCount("adults", adults + 1);
-    $("oe-kids-minus").onclick   = () => setCount("kids", kids - 1);
-    $("oe-kids-plus").onclick    = () => setCount("kids", kids + 1);
-
-    function toISODate(d){ return new Date(d).toISOString().split("T")[0]; }
-    function addDaysISO(iso,n){ const dt = new Date(iso); dt.setDate(dt.getDate()+n); return toISODate(dt); }
-    function diffDays(s,e){ return Math.round((new Date(e)-new Date(s))/86400000)+1; }
-    function clampDate(v,min,max){ if(!v)return v; if(min&&v<min)return min; if(max&&v>max)return max; return v; }
-    function toISO(dtStr, end){ return new Date(dtStr + (end ? "T23:59:59.999" : "T00:00:00")).toISOString(); }
-
-    function syncConstraints(){
-      const s = elStart.value;
-      if (!s){ elEnd.value=""; elEnd.disabled=true; dur.textContent=t("date_unset"); return; }
-      elEnd.disabled=false; elEnd.min=s; elEnd.max=addDaysISO(s, MAX_DAYS-1);
-      elEnd.value = clampDate(elEnd.value || s, elEnd.min, elEnd.max);
-      updateDuration();
-    }
-    function updateDuration(){
-      const s = elStart.value; const e = elEnd.value || s;
-      if (!s){ dur.textContent = t("date_unset"); return; }
-      let d = diffDays(s, e);
-      if (d < 1) { d = 1; elEnd.value = s; }
-      if (d > MAX_DAYS) { d = MAX_DAYS; elEnd.value = addDaysISO(s, MAX_DAYS-1); }
-      dur.textContent = t("selected_duration")
-        .replace("{d}", d)
-        .replace("{day}", plural(d, "day_one", "day_other"));
-    }
-    ["input","change","blur"].forEach(evt=>{
-      elStart.addEventListener(evt, syncConstraints);
-      elEnd.addEventListener(evt, () => { if (elStart.value){ elEnd.min=elStart.value; elEnd.max=addDaysISO(elStart.value, MAX_DAYS-1); elEnd.value=clampDate(elEnd.value, elEnd.min, elEnd.max); } updateDuration(); });
-    });
-
-    // ---------- Shop-URL Builder (sprach- & produktabhängig, mit UTM) ----------
-    function buildShopUrl(formState, days){
-      const isMulti = days > 1;
-      // Basis-Path je Sprache & Produkt
-      const base = (LANG === 'en')
-        ? (isMulti ? 'https://shop.oetscher.at/en/products/skitickets-pool' : 'https://shop.oetscher.at/en/products/skitickets')
-        : (isMulti ? 'https://shop.oetscher.at/products/skitickets-pool'    : 'https://shop.oetscher.at/products/skitickets');
-
-      const url = new URL(base);
-
-      // Defaults gem. Vorgabe
-      const UTM_DEFAULT = {
-        utm_source:   'referral',
-        utm_medium:   'widget',
-        utm_campaign: 'oet',
-        utm_content:  'undefined'
-      };
-
-      // iFrame-Overrides erlauben (utm_*)
-      const utms = { ...UTM_DEFAULT };
-      ['utm_source','utm_medium','utm_campaign','utm_content'].forEach(k=>{
-        if (qs.get(k)) utms[k] = qs.get(k);
-      });
-
-      Object.entries(utms).forEach(([k,v])=>url.searchParams.set(k,v));
-      url.searchParams.set('formState', JSON.stringify(formState));
-      return url.toString();
-    }
-
-    $("oe-submit").onclick = () => {
-      err.style.display = "none";
-      const s = elStart.value;
-      if (!s){ err.textContent = t("error_start"); err.style.display="block"; return; }
-      syncConstraints(); updateDuration();
-
-      const e = elEnd.value || s;
-      const d = diffDays(s, e);
-      if (d < 1 || d > MAX_DAYS){ err.textContent = t("error_duration"); err.style.display="block"; return; }
-
-      const formState = {
-        validity: { from: toISO(s,false), to: toISO(e,true) },
-        allocation: {
-          kind: "persontype",
-          values: [
-            { kind:"anonymous", quantity: parseInt(document.getElementById("oe-adults-count").textContent,10)||0, personType:"adult" },
-            { kind:"anonymous", quantity: parseInt(document.getElementById("oe-kids-count").textContent,10)||0,   personType:"child" }
-          ].filter(v=>v.quantity>0)
+      const TEXTS = {
+        de: {
+          title: "Skitickets",
+          subtitle: "Stunden-, Tages- & Mehrtagestickets",
+          dateSection: "Datumsbereich",
+          from: "Von",
+          to: "Bis",
+          endPlaceholder: "Optional",
+          hint: "Buchbar sind 1–6 Tage. „Bis“ leer lassen, um 1 Tag zu buchen.",
+          durationPrefix: "Ausgewählte Dauer:",
+          day: "Tag",
+          days: "Tage",
+          adults: "Erwachsene",
+          adultsSub: "ab 16 Jahren",
+          kids: "Kinder",
+          kidsSub: "6–15 Jahre",
+          cta: "Weiter",
+          clear: "Bis löschen",
+          close: "Schließen",
+          errDuration: "Bitte Dauer zwischen 1 und 6 Tagen wählen.",
+          errMinTickets: "Bitte mindestens 1 Ticket auswählen.",
+          months: ["Jänner", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+          weekdays: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
         },
-        attributes: { duration: d===1 ? "1d" : (d+"d") }
+        en: {
+          title: "Ski tickets",
+          subtitle: "Hourly, day & multi-day tickets",
+          dateSection: "Date range",
+          from: "From",
+          to: "To",
+          endPlaceholder: "Optional",
+          hint: "You can book 1–6 days. Leave “To” empty to book 1 day.",
+          durationPrefix: "Selected duration:",
+          day: "day",
+          days: "days",
+          adults: "Adults",
+          adultsSub: "from 16 years",
+          kids: "Children",
+          kidsSub: "6–15 years",
+          cta: "Continue",
+          clear: "Clear end date",
+          close: "Close",
+          errDuration: "Please choose a duration between 1 and 6 days.",
+          errMinTickets: "Please select at least 1 ticket.",
+          months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+          weekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        }
       };
 
-      window.open(buildShopUrl(formState, d), "_blank", "noopener");
-    };
+      const MAX_DAYS = 6;
+      const MAX_TICKETS = 99;
 
-    // defaults
-    setCount("adults",1); setCount("kids",0);
-  })();
-  </script>
+      const $ = (id) => document.getElementById(id);
+      const t = TEXTS[LANG];
 
-  <script>
-  // --- iFrame Auto-Resize (OEWIDGET_HEIGHT) ---
-  (function(){
-    var ROOT = document.getElementById('oe-widget');
-    var BODY_PADDING = 48; // 24 + 24
-    function calcHeight(){ return Math.ceil(ROOT.getBoundingClientRect().height) + BODY_PADDING; }
-    function post(reason){ try{ parent.postMessage({ type:'OEWIDGET_HEIGHT', height: calcHeight(), reason: reason||'' }, '*'); }catch(e){} }
-    window.addEventListener('load',  function(){ post('load');  });
-    window.addEventListener('resize',function(){ post('resize');});
-    var mo = new MutationObserver(function(){ clearTimeout(post._t); post._t = setTimeout(function(){ post('mut'); }, 50); });
-    mo.observe(ROOT, { subtree:true, childList:true, attributes:true });
-    setTimeout(function(){ post('delay300'); }, 300);
-    setTimeout(function(){ post('delay1200'); }, 1200);
-  })();
+      const state = {
+        start: todayISO(),
+        end: "",
+        adults: 1,
+        kids: 0,
+        pickerMode: null,
+        pickerMonth: null
+      };
+
+      const els = {
+        widget: $("oe-widget"),
+        startBtn: $("oe-start-btn"),
+        endBtn: $("oe-end-btn"),
+        startText: $("oe-start-text"),
+        endText: $("oe-end-text"),
+        duration: $("oe-duration"),
+        error: $("oe-error"),
+        datepicker: $("oe-datepicker"),
+        adultsCount: $("oe-adults-count"),
+        kidsCount: $("oe-kids-count"),
+        adultsMinus: $("oe-adults-minus"),
+        adultsPlus: $("oe-adults-plus"),
+        kidsMinus: $("oe-kids-minus"),
+        kidsPlus: $("oe-kids-plus"),
+        submit: $("oe-submit")
+      };
+
+      function todayISO() {
+        return toISODateLocal(new Date());
+      }
+
+      function parseISODate(iso) {
+        const parts = iso.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0, 0);
+      }
+
+      function toISODateLocal(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      }
+
+      function addDaysISO(iso, n) {
+        const d = parseISODate(iso);
+        d.setDate(d.getDate() + n);
+        return toISODateLocal(d);
+      }
+
+      function diffDays(startISO, endISO) {
+        return Math.round((parseISODate(endISO) - parseISODate(startISO)) / 86400000) + 1;
+      }
+
+      function formatDate(iso) {
+        const d = parseISODate(iso);
+        return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
+      }
+
+      function toLocalISOString(date) {
+        const pad = (num, len = 2) => String(num).padStart(len, "0");
+        const offsetMin = -date.getTimezoneOffset();
+        const sign = offsetMin >= 0 ? "+" : "-";
+        const abs = Math.abs(offsetMin);
+
+        return (
+          date.getFullYear() + "-" +
+          pad(date.getMonth() + 1) + "-" +
+          pad(date.getDate()) + "T" +
+          pad(date.getHours()) + ":" +
+          pad(date.getMinutes()) + ":" +
+          pad(date.getSeconds()) + "." +
+          pad(date.getMilliseconds(), 3) +
+          sign +
+          pad(Math.floor(abs / 60)) + ":" +
+          pad(abs % 60)
+        );
+      }
+
+      function totalTickets() {
+        return state.adults + state.kids;
+      }
+
+      function hideError() {
+        els.error.style.display = "none";
+        els.error.textContent = "";
+      }
+
+      function showError(message) {
+        els.error.textContent = message;
+        els.error.style.display = "block";
+        postHeight("error");
+      }
+
+      function applyTranslations() {
+        document.documentElement.lang = LANG;
+        document.querySelector(".oe-title").textContent = t.title;
+        document.querySelector(".oe-subtitle").textContent = t.subtitle;
+        document.querySelector("#oe-date-section .oe-section-title").textContent = t.dateSection;
+        $("oe-start-label").textContent = t.from;
+        $("oe-end-label").textContent = t.to;
+        document.querySelector(".oe-hint").textContent = t.hint;
+        $("oe-adults-label").textContent = t.adults;
+        $("oe-adults-sub").textContent = t.adultsSub;
+        $("oe-kids-label").textContent = t.kids;
+        $("oe-kids-sub").textContent = t.kidsSub;
+        els.submit.textContent = t.cta;
+      }
+
+      function validateDates() {
+        if (!state.start) state.start = todayISO();
+
+        if (state.end) {
+          if (state.end < state.start) {
+            state.end = "";
+          } else if (diffDays(state.start, state.end) > MAX_DAYS) {
+            state.end = addDaysISO(state.start, MAX_DAYS - 1);
+          }
+        }
+      }
+
+      function render() {
+        validateDates();
+
+        els.startText.textContent = formatDate(state.start);
+
+        if (state.end) {
+          els.endText.textContent = formatDate(state.end);
+          els.endBtn.classList.remove("is-placeholder");
+        } else {
+          els.endText.textContent = t.endPlaceholder;
+          els.endBtn.classList.add("is-placeholder");
+        }
+
+        els.startBtn.classList.toggle("is-active", state.pickerMode === "start");
+        els.endBtn.classList.toggle("is-active", state.pickerMode === "end");
+
+        const duration = diffDays(state.start, state.end || state.start);
+        els.duration.textContent = `${t.durationPrefix} ${duration} ${duration === 1 ? t.day : t.days}`;
+
+        els.adultsCount.textContent = String(state.adults);
+        els.kidsCount.textContent = String(state.kids);
+
+        els.adultsMinus.disabled = state.adults <= 0 || (totalTickets() <= 1 && state.adults > 0);
+        els.kidsMinus.disabled = state.kids <= 0 || (totalTickets() <= 1 && state.kids > 0);
+        els.adultsPlus.disabled = totalTickets() >= MAX_TICKETS;
+        els.kidsPlus.disabled = totalTickets() >= MAX_TICKETS;
+
+        renderPicker();
+        postHeight("render");
+      }
+
+      function togglePicker(mode) {
+        hideError();
+
+        if (state.pickerMode === mode) {
+          state.pickerMode = null;
+          render();
+          return;
+        }
+
+        state.pickerMode = mode;
+        state.pickerMonth = firstOfMonth(mode === "end" && state.end ? state.end : state.start);
+        render();
+      }
+
+      function closePicker() {
+        state.pickerMode = null;
+        render();
+      }
+
+      function firstOfMonth(iso) {
+        const d = parseISODate(iso);
+        return toISODateLocal(new Date(d.getFullYear(), d.getMonth(), 1, 12));
+      }
+
+      function changePickerMonth(delta) {
+        const d = parseISODate(state.pickerMonth);
+        d.setMonth(d.getMonth() + delta);
+        state.pickerMonth = toISODateLocal(new Date(d.getFullYear(), d.getMonth(), 1, 12));
+        renderPicker();
+        postHeight("month");
+      }
+
+      function renderPicker() {
+        if (!state.pickerMode) {
+          els.datepicker.hidden = true;
+          els.datepicker.innerHTML = "";
+          return;
+        }
+
+        els.datepicker.hidden = false;
+
+        const monthDate = parseISODate(state.pickerMonth);
+        const year = monthDate.getFullYear();
+        const month = monthDate.getMonth();
+        const firstDay = new Date(year, month, 1, 12);
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const startOffset = (firstDay.getDay() + 6) % 7;
+
+        const selectedISO = state.pickerMode === "start" ? state.start : state.end;
+        const minISO = state.pickerMode === "end" ? state.start : null;
+        const maxISO = state.pickerMode === "end" ? addDaysISO(state.start, MAX_DAYS - 1) : null;
+        const today = todayISO();
+
+        let html = `
+          <div class="oe-cal-head">
+            <button class="oe-cal-nav" type="button" data-cal-prev aria-label="Previous month">‹</button>
+            <div class="oe-cal-title">${t.months[month]} ${year}</div>
+            <button class="oe-cal-nav" type="button" data-cal-next aria-label="Next month">›</button>
+          </div>
+          <div class="oe-cal-grid">
+        `;
+
+        t.weekdays.forEach((day) => {
+          html += `<div class="oe-cal-weekday">${day}</div>`;
+        });
+
+        for (let i = 0; i < startOffset; i++) {
+          html += `<div class="oe-cal-empty"></div>`;
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const iso = toISODateLocal(new Date(year, month, day, 12));
+          const disabled = state.pickerMode === "end" && (iso < minISO || iso > maxISO);
+          const selected = iso === selectedISO;
+          const isToday = iso === today;
+
+          html += `
+            <button
+              class="oe-cal-day${selected ? " is-selected" : ""}${isToday ? " is-today" : ""}"
+              type="button"
+              data-date="${iso}"
+              ${disabled ? "disabled" : ""}
+            >${day}</button>
+          `;
+        }
+
+        html += `
+          </div>
+          <div class="oe-cal-actions">
+            ${state.pickerMode === "end" ? `<button class="oe-cal-action" type="button" data-cal-clear>${t.clear}</button>` : `<span></span>`}
+            <button class="oe-cal-action primary" type="button" data-cal-close>${t.close}</button>
+          </div>
+        `;
+
+        els.datepicker.innerHTML = html;
+      }
+
+      function setCount(type, delta) {
+        hideError();
+
+        if (type === "adults") {
+          const next = Math.max(0, Math.min(MAX_TICKETS, state.adults + delta));
+          if (delta < 0 && totalTickets() <= 1 && state.adults > 0) return;
+          state.adults = next;
+        }
+
+        if (type === "kids") {
+          const next = Math.max(0, Math.min(MAX_TICKETS, state.kids + delta));
+          if (delta < 0 && totalTickets() <= 1 && state.kids > 0) return;
+          state.kids = next;
+        }
+
+        render();
+      }
+
+      function buildShopUrl(formState, duration) {
+        const isMultiDay = duration > 1;
+
+        const base = LANG === "en"
+          ? (isMultiDay
+              ? "https://shop.oetscher.at/en/products/skitickets-pool"
+              : "https://shop.oetscher.at/en/products/skitickets")
+          : (isMultiDay
+              ? "https://shop.oetscher.at/products/skitickets-pool"
+              : "https://shop.oetscher.at/products/skitickets");
+
+        const url = new URL(base);
+
+        const utms = {
+          utm_source: "referral",
+          utm_medium: "widget",
+          utm_campaign: "oet",
+          utm_content: "undefined"
+        };
+
+        ["utm_source", "utm_medium", "utm_campaign", "utm_content"].forEach((key) => {
+          if (qs.get(key)) utms[key] = qs.get(key);
+        });
+
+        Object.entries(utms).forEach(([key, value]) => url.searchParams.set(key, value));
+        url.searchParams.set("formState", JSON.stringify(formState));
+
+        return url.toString();
+      }
+
+      function submit() {
+        hideError();
+
+        if (totalTickets() < 1) {
+          showError(t.errMinTickets);
+          return;
+        }
+
+        const endISO = state.end || state.start;
+        const duration = diffDays(state.start, endISO);
+
+        if (duration < 1 || duration > MAX_DAYS) {
+          showError(t.errDuration);
+          return;
+        }
+
+        const startBase = parseISODate(state.start);
+        const endBase = parseISODate(endISO);
+
+        const fromDate = new Date(startBase.getFullYear(), startBase.getMonth(), startBase.getDate(), 0, 0, 0, 0);
+        const toDate = new Date(endBase.getFullYear(), endBase.getMonth(), endBase.getDate(), 23, 59, 59, 999);
+
+        const values = [];
+
+        if (state.adults > 0) {
+          values.push({ kind: "anonymous", quantity: state.adults, personType: "adult" });
+        }
+
+        if (state.kids > 0) {
+          values.push({ kind: "anonymous", quantity: state.kids, personType: "child" });
+        }
+
+        const formState = {
+          validity: {
+            from: toLocalISOString(fromDate),
+            to: toLocalISOString(toDate)
+          },
+          allocation: {
+            kind: "persontype",
+            values
+          },
+          attributes: {
+            duration: `${duration}d`
+          }
+        };
+
+        window.open(buildShopUrl(formState, duration), "_blank", "noopener");
+      }
+
+      function bindEvents() {
+        els.startBtn.addEventListener("click", () => togglePicker("start"));
+        els.endBtn.addEventListener("click", () => togglePicker("end"));
+
+        els.adultsMinus.addEventListener("click", () => setCount("adults", -1));
+        els.adultsPlus.addEventListener("click", () => setCount("adults", 1));
+        els.kidsMinus.addEventListener("click", () => setCount("kids", -1));
+        els.kidsPlus.addEventListener("click", () => setCount("kids", 1));
+
+        els.submit.addEventListener("click", submit);
+
+        els.datepicker.addEventListener("click", (event) => {
+          const target = event.target.closest("button");
+          if (!target) return;
+
+          if (target.hasAttribute("data-cal-prev")) {
+            changePickerMonth(-1);
+            return;
+          }
+
+          if (target.hasAttribute("data-cal-next")) {
+            changePickerMonth(1);
+            return;
+          }
+
+          if (target.hasAttribute("data-cal-close")) {
+            closePicker();
+            return;
+          }
+
+          if (target.hasAttribute("data-cal-clear")) {
+            state.end = "";
+            closePicker();
+            return;
+          }
+
+          const date = target.getAttribute("data-date");
+          if (!date) return;
+
+          if (state.pickerMode === "start") {
+            state.start = date;
+
+            if (state.end && (state.end < state.start || diffDays(state.start, state.end) > MAX_DAYS)) {
+              state.end = "";
+            }
+          }
+
+          if (state.pickerMode === "end") {
+            state.end = date;
+          }
+
+          closePicker();
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && state.pickerMode) closePicker();
+        });
+      }
+
+      function postHeight(reason) {
+        window.clearTimeout(postHeight._t);
+        postHeight._t = window.setTimeout(() => {
+          const height = Math.ceil(els.widget.getBoundingClientRect().height) + 24;
+          parent.postMessage({ type: "OEWIDGET_HEIGHT", height, reason }, "*");
+        }, 30);
+      }
+
+      applyTranslations();
+      bindEvents();
+      render();
+
+      window.addEventListener("load", () => postHeight("load"));
+      window.addEventListener("resize", () => postHeight("resize"));
+
+      const mo = new MutationObserver(() => postHeight("mutation"));
+      mo.observe(els.widget, { subtree: true, childList: true, attributes: true });
+
+      setTimeout(() => postHeight("delay300"), 300);
+      setTimeout(() => postHeight("delay1200"), 1200);
+    })();
   </script>
 </body>
 </html>
